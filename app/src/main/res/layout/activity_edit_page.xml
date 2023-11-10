@@ -32,7 +32,7 @@
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="-1dp"
-            app:itemBackground="@color/teal_700"
+            android:background="#144975"
             app:itemIconTint="@drawable/selector"
             app:itemTextColor="@drawable/selector"
             app:menu="@menu/menu_nav" />

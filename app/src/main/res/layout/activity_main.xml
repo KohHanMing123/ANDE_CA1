@@ -9,8 +9,8 @@
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
-        android:layout_width="412dp"
-        android:layout_height="729dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -33,7 +33,7 @@
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="-1dp"
-            app:itemBackground="@color/teal_700"
+            android:background="#144975"
             app:itemIconTint="@drawable/selector"
             app:itemTextColor="@drawable/selector"
             app:menu="@menu/menu_nav" />
