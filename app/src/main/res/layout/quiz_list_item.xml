@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_grey_box"
+    android:padding="16dp">
+
+    <!-- Main text -->
+    <TextView
+        android:id="@+id/textViewQuizName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="@string/quiz_name_1"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <!-- Subtext -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+    <TextView
+        android:id="@+id/textViewSubtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewQuizName"
+        android:layout_marginTop="4dp"
+        android:text="Your subtext here"
+        android:textColor="#666666"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:ignore="NotSibling" />
+
+        <ImageView
+            android:id="@+id/imageViewArrow"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+
+            android:src="@drawable/ic_round_play_arrow_24" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

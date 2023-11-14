@@ -27,7 +27,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".TimePage"
+            android:name=".QuizPage"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

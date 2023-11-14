@@ -33,7 +33,7 @@ public class SettingsPage extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.time) {
-                    startActivity(new Intent(getApplicationContext(), TimePage.class));
+                    startActivity(new Intent(getApplicationContext(), QuizPage.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.edit) {
