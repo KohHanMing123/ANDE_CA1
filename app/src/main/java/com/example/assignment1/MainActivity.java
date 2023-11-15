@@ -10,11 +10,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
 
+public class MainActivity extends AppCompatActivity {
+    ListView listView;
+    TextView textView;
+    String[] listItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,5 +59,24 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void setupHomeworkListView() {
+        listView = findViewById(R.id.listViewHW);
+
+        List<HomeworkItem> homeworkItems = generateHWItems(); // method to create your list
+
+//        QuizAdapter quizAdapter = new QuizAdapter(this, quizItems);
+//        listView.setAdapter(quizAdapter);
+
+    }
+
+    private List<HomeworkItem> generateHWItems() {
+        List<HomeworkItem> homeworkItems = new ArrayList<HomeworkItem>(){
+            {
+                add(new HomeworkItem("hello", "hello"));
+            }
+        };
+        return homeworkItems;
     }
 }

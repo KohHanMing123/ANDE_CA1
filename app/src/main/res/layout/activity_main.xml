@@ -132,7 +132,7 @@
                 android:textSize="21dp" />
 
             <ListView
-                android:id="@+id/listView"
+                android:id="@+id/listViewHW"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@android:color/transparent"
