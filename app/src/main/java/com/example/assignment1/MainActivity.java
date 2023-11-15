@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        setupHomeworkListView();
+        generateHWItems();
     }
 
     private void setupHomeworkListView() {
@@ -66,17 +69,22 @@ public class MainActivity extends AppCompatActivity {
 
         List<HomeworkItem> homeworkItems = generateHWItems(); // method to create your list
 
-//        QuizAdapter quizAdapter = new QuizAdapter(this, quizItems);
-//        listView.setAdapter(quizAdapter);
+        HomeworkListAdapter hwAdapter = new HomeworkListAdapter(this, homeworkItems);
+        listView.setAdapter(hwAdapter);
 
     }
 
     private List<HomeworkItem> generateHWItems() {
         List<HomeworkItem> homeworkItems = new ArrayList<HomeworkItem>(){
             {
-                add(new HomeworkItem("hello", "hello"));
+                add(new HomeworkItem("Daily Problem Sums", "Mathematics"));
+                add(new HomeworkItem("Workbook Page 31-33", "Chinese"));
+                add(new HomeworkItem("Exercise 3B", "Science"));
+                add(new HomeworkItem("Learn Spelling", "English"));
             }
         };
         return homeworkItems;
     }
+
+
 }
