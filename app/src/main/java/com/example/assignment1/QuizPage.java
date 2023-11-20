@@ -40,19 +40,23 @@ public class QuizPage extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
 
-                if (itemId == R.id.dashboard) {
+                if (itemId == R.id.home) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
-                } else if (itemId == R.id.time) {
-                    // Call a method to set up the ListView
-                    setupQuizListView();
+                } else if (itemId == R.id.homework) {
+                    startActivity(new Intent(getApplicationContext(), HomeworkPage.class));
+                    overridePendingTransition(0, 0);
                     return true;
-                } else if (itemId == R.id.edit) {
+                }  else if (itemId == R.id.time) {
+                    startActivity(new Intent(getApplicationContext(), QuizPage.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.calendar) {
                     startActivity(new Intent(getApplicationContext(), EditPage.class));
                     overridePendingTransition(0, 0);
                     return true;
-                } else if (itemId == R.id.settings) {
+                } else if (itemId == R.id.form) {
                     startActivity(new Intent(getApplicationContext(), SettingsPage.class));
                     overridePendingTransition(0, 0);
                     return true;

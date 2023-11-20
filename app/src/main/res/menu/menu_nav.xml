@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <item
-        android:id="@+id/dashboard"
-        android:title="Dashboard"
+        android:id="@+id/home"
+        android:title="Home"
+        android:icon="@drawable/ic_baseline_home_24" />
+    <item
+        android:id="@+id/homework"
+        android:title="Homework"
         android:icon="@drawable/ic_outline_description_24"/>
     <item
         android:id="@+id/time"
@@ -11,12 +16,14 @@
         android:icon="@drawable/ic_baseline_access_time_24"/>
 
     <item
-        android:id="@+id/edit"
-        android:title="Edit"
-        android:icon="@drawable/ic_baseline_edit_24"/>
+        android:id="@+id/calendar"
+        android:title="Calendar"
+        android:icon="@drawable/ic_baseline_calendar_month_24"/>
 
     <item
-        android:id="@+id/settings"
-        android:title="Settings"
-        android:icon="@drawable/ic_baseline_settings_24"/>
+        android:id="@+id/form"
+        android:title="Form"
+        android:icon="@drawable/ic_baseline_brush_24" />
+
+
 </menu>

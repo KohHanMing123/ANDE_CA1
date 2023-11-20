@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
 
         // Set the icon selected
-        bottomNavigationView.setSelectedItemId(R.id.dashboard);
+        bottomNavigationView.setSelectedItemId(R.id.home);
 
         // Perform icon selected listener
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
@@ -38,19 +38,23 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
 
-                if (itemId == R.id.dashboard) {
+                if (itemId == R.id.home) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
-                } else if (itemId == R.id.time) {
+                } else if (itemId == R.id.homework) {
+                    startActivity(new Intent(getApplicationContext(), HomeworkPage.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }  else if (itemId == R.id.time) {
                     startActivity(new Intent(getApplicationContext(), QuizPage.class));
                     overridePendingTransition(0, 0);
                     return true;
-                } else if (itemId == R.id.edit) {
+                } else if (itemId == R.id.calendar) {
                     startActivity(new Intent(getApplicationContext(), EditPage.class));
                     overridePendingTransition(0, 0);
                     return true;
-                } else if (itemId == R.id.settings) {
+                } else if (itemId == R.id.form) {
                     startActivity(new Intent(getApplicationContext(), SettingsPage.class));
                     overridePendingTransition(0, 0);
                     return true;
