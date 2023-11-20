@@ -17,9 +17,15 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         ImageView image = (ImageView)findViewById(R.id.SplashScreenImage);
+        ImageView imagePen = (ImageView)findViewById(R.id.pen);
+        ImageView imageStars = (ImageView)findViewById(R.id.stars);
         Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.side_slide);
+        Animation animation2 = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.flies_up);
         image.startAnimation(animation1);
+        imagePen.startAnimation(animation2);
+        imageStars.startAnimation(animation2);
 
         /* Start the Menu-Activity
          * and close Splash-Screen after SPLAH_DISPLAY milliseconds*/
