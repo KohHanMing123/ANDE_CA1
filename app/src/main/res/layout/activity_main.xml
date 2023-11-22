@@ -89,7 +89,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/latestAnnouncementCard"
                 android:layout_width="match_parent"
-                android:layout_height="159dp"
+                android:layout_height="180dp"
                 android:layout_marginTop="20px"
                 android:clickable="true"
                 app:cardCornerRadius="30px">
@@ -99,29 +99,25 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/imageView"
+                    <ImageSwitcher
+                        android:id="@+id/imageSwitcherAnnouncement"
                         android:layout_width="match_parent"
-                        android:layout_height="128dp"
-                        android:scaleType="fitXY"
-                        android:scaleX="1"
-                        app:srcCompat="@drawable/books" />
+                        android:layout_height="150dp" />
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/textViewAnnouncement"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15px"
                         android:layout_marginTop="10px"
                         android:fontFamily="@font/lexend_medium"
                         android:foregroundGravity="bottom"
-                        android:text="National Book Day on 25 November!"
+                        android:text="PlaceHolder for text"
                         android:textColor="#000000"
                         android:textSize="16dp" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
             <TextView
                 android:id="@+id/textLatestAnnouncements2"
                 android:layout_width="match_parent"
@@ -134,244 +130,10 @@
             <ListView
                 android:id="@+id/listViewHW"
                 android:layout_width="match_parent"
-                android:layout_height="203dp"
+                android:layout_height="185dp"
                 android:layout_marginTop="10px"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="10dp" />
-
-            <!--            <LinearLayout-->
-<!--                android:id="@+id/upcomingHomeworkList"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="114dp"-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:orientation="vertical">-->
-
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="50dp"-->
-<!--                    android:layout_marginBottom="10dp"-->
-<!--                    app:cardCornerRadius="10dp">-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:gravity="center"-->
-<!--                        android:orientation="horizontal">-->
-
-<!--                        <LinearLayout-->
-<!--                            android:layout_width="300dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:orientation="vertical"-->
-<!--                            android:paddingLeft="10dp">-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/hw_title_4"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Daily Problem Sums"-->
-<!--                                android:textColor="#000000"-->
-<!--                                android:textSize="20dp" />-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/subject_desc_4"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Mathematics" />-->
-<!--                        </LinearLayout>-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/right_arrow_4"-->
-<!--                            android:layout_width="60dp"-->
-<!--                            android:layout_height="31dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            app:srcCompat="@drawable/rightarrow" />-->
-<!--                    </LinearLayout>-->
-
-<!--                </androidx.cardview.widget.CardView>-->
-
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="50dp"-->
-<!--                    android:layout_marginBottom="10dp"-->
-<!--                    app:cardCornerRadius="10dp">-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:gravity="center"-->
-<!--                        android:orientation="horizontal">-->
-
-<!--                        <LinearLayout-->
-<!--                            android:layout_width="300dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:orientation="vertical"-->
-<!--                            android:paddingLeft="10dp">-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/hw_title_1"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Daily Problem Sums"-->
-<!--                                android:textColor="#000000"-->
-<!--                                android:textSize="20dp" />-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/subject_desc_1"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Mathematics" />-->
-<!--                        </LinearLayout>-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/right_arrow_1"-->
-<!--                            android:layout_width="60dp"-->
-<!--                            android:layout_height="31dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            app:srcCompat="@drawable/rightarrow" />-->
-<!--                    </LinearLayout>-->
-
-<!--                </androidx.cardview.widget.CardView>-->
-
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="50dp"-->
-<!--                    android:layout_marginBottom="10dp"-->
-<!--                    app:cardCornerRadius="10dp">-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:gravity="center"-->
-<!--                        android:orientation="horizontal">-->
-
-<!--                        <LinearLayout-->
-<!--                            android:layout_width="300dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:orientation="vertical"-->
-<!--                            android:paddingLeft="10dp">-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/hw_title_2"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Daily Problem Sums"-->
-<!--                                android:textColor="#000000"-->
-<!--                                android:textSize="20dp" />-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/subject_desc_2"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Mathematics" />-->
-<!--                        </LinearLayout>-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/right_arrow_2"-->
-<!--                            android:layout_width="60dp"-->
-<!--                            android:layout_height="31dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            app:srcCompat="@drawable/rightarrow" />-->
-<!--                    </LinearLayout>-->
-
-<!--                </androidx.cardview.widget.CardView>-->
-
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="50dp"-->
-<!--                    android:layout_marginB-->
-<!--                    ottom="10dp"-->
-<!--                    app:cardCornerRadius="10dp">-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:gravity="center"-->
-<!--                        android:orientation="horizontal">-->
-
-<!--                        <LinearLayout-->
-<!--                            android:layout_width="300dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:orientation="vertical"-->
-<!--                            android:paddingLeft="10dp">-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/hw_title_3"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Daily Problem Sums"-->
-<!--                                android:textColor="#000000"-->
-<!--                                android:textSize="20dp" />-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/subject_desc_3"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Mathematics" />-->
-<!--                        </LinearLayout>-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/right_arrow_3"-->
-<!--                            android:layout_width="60dp"-->
-<!--                            android:layout_height="31dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            app:srcCompat="@drawable/rightarrow" />-->
-<!--                    </LinearLayout>-->
-
-<!--                </androidx.cardview.widget.CardView>-->
-
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="50dp"-->
-<!--                    app:cardCornerRadius="10dp">-->
-
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:gravity="center"-->
-<!--                        android:orientation="horizontal">-->
-
-<!--                        <LinearLayout-->
-<!--                            android:layout_width="300dp"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:orientation="vertical"-->
-<!--                            android:paddingLeft="10dp">-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/hw_title_5"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Daily Problem Sums"-->
-<!--                                android:textColor="#000000"-->
-<!--                                android:textSize="20dp" />-->
-
-<!--                            <TextView-->
-<!--                                android:id="@+id/subject_desc_5"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:fontFamily="@font/lexend_medium"-->
-<!--                                android:text="Mathematics" />-->
-<!--                        </LinearLayout>-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/right_arrow_5"-->
-<!--                            android:layout_width="60dp"-->
-<!--                            android:layout_height="31dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            app:srcCompat="@drawable/rightarrow" />-->
-<!--                    </LinearLayout>-->
-
-<!--                </androidx.cardview.widget.CardView>-->
-
-<!--            </LinearLayout>-->
 
         </LinearLayout>
 

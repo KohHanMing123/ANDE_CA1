@@ -3,14 +3,21 @@ package com.example.assignment1;
 import static java.lang.System.out;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -19,7 +26,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     ListView listView;
-    TextView textView;
+    TextView textView, announcementTextView;
+    ImageSwitcher announcementImageSwitcher;
+    private int[] announcementImages = {R.drawable.books, R.drawable.assembly_announcement, R.drawable.recess_party};
+    private String[] announcementText = {"National Book Day on 25 November!", "Joakim & Sonia this Wednesday!", "Recess Party on 1 December!"};
+    private int currentIndex = 0;
+    private Handler handler = new Handler();
     String[] listItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +75,24 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        announcementImageSwitcher = findViewById(R.id.imageSwitcherAnnouncement);
+        announcementTextView = findViewById(R.id.textViewAnnouncement);
+        announcementImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                ImageView myView = new ImageView(getApplicationContext());
+                myView.setScaleType(ImageView.ScaleType.FIT_XY);
 
+
+                return myView;
+            }
+        });
+        announcementImageSwitcher.setInAnimation(AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.fade_in));
+        announcementImageSwitcher.setOutAnimation(AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.fade_out));
+        announcementImageSwitcher.setImageResource(announcementImages[currentIndex]);
+        announcementTextView.setText(announcementText[currentIndex]);
+        long interval = 3000L; // 3 seconds
+        handler.postDelayed(announcementSwitchRunnable, interval);
         setupHomeworkListView();
         generateHWItems();
     }
@@ -89,6 +118,20 @@ public class MainActivity extends AppCompatActivity {
         };
         return homeworkItems;
     }
+
+    private Runnable announcementSwitchRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // Update index and switch image
+            currentIndex = (currentIndex + 1) % announcementImages.length;
+            announcementImageSwitcher.setImageResource(announcementImages[currentIndex]);
+            announcementTextView.setText(announcementText[currentIndex]);
+
+
+            long interval = 3000L; // 3 seconds
+            handler.postDelayed(this, interval);
+        }
+    };
 
 
 }
