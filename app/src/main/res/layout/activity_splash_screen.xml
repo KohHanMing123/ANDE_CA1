@@ -48,7 +48,7 @@
         app:srcCompat="@drawable/pensplash" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/cloudsplash"
         android:layout_width="419dp"
         android:layout_height="325dp"
         android:layout_marginStart="4dp"
@@ -67,6 +67,5 @@
         app:layout_constraintEnd_toEndOf="@+id/TitleSplash"
         app:layout_constraintStart_toStartOf="@+id/TitleSplash"
         app:srcCompat="@drawable/starsplash" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

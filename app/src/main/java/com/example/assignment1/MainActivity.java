@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -75,6 +76,21 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+//        ANIMATION PROPERTIES
+        ImageSwitcher announcementsImages = (ImageSwitcher) findViewById(R.id.imageSwitcherAnnouncement);
+        Animation slide = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.side_slide);
+        Animation flies = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.flies_up);
+        listView = findViewById(R.id.listViewHW);
+        announcementsImages.startAnimation(slide);
+        listView.startAnimation(slide);
+        TextView welcomeText = (TextView) findViewById(R.id.textWelcome);
+        welcomeText.startAnimation(flies);
+        // END OF ANIMATION
+
+
         announcementImageSwitcher = findViewById(R.id.imageSwitcherAnnouncement);
         announcementTextView = findViewById(R.id.textViewAnnouncement);
         announcementImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {

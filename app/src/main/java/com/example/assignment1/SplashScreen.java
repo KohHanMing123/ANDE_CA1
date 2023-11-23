@@ -10,7 +10,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 public class SplashScreen extends AppCompatActivity {
-    private final int SPLASH_DISPLAY = 1000;
+    private final int SPLASH_DISPLAY = 2000;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,13 +19,15 @@ public class SplashScreen extends AppCompatActivity {
         ImageView image = (ImageView)findViewById(R.id.SplashScreenImage);
         ImageView imagePen = (ImageView)findViewById(R.id.pen);
         ImageView imageStars = (ImageView)findViewById(R.id.stars);
-        Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(),
+        Animation slide = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.side_slide);
-        Animation animation2 = AnimationUtils.loadAnimation(getApplicationContext(),
+        Animation fliesUp = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.flies_up);
-        image.startAnimation(animation1);
-        imagePen.startAnimation(animation2);
-        imageStars.startAnimation(animation2);
+
+        image.startAnimation(slide);
+        imagePen.startAnimation(fliesUp);
+        imageStars.startAnimation(fliesUp);
+
 
         /* Start the Menu-Activity
          * and close Splash-Screen after SPLAH_DISPLAY milliseconds*/
