@@ -47,13 +47,18 @@ public class QuizAdapter extends BaseAdapter {
         TextView textViewSubtext = convertView.findViewById(R.id.textViewSubtext);
         ImageView imageViewArrow = convertView.findViewById(R.id.imageViewArrow);
 
-
-
         QuizItem quizItem = quizItems.get(position);
         textViewQuizName.setText(quizItem.getQuizName());
         textViewSubtext.setText(quizItem.getSubtext());
         imageViewArrow.setImageResource(R.drawable.ic_round_play_arrow_24);
 
         return convertView;
+    }
+
+    // Method to update the dataset and notify the adapter
+    public void updateData(List<QuizItem> newQuizItems) {
+        quizItems.clear();
+        quizItems.addAll(newQuizItems);
+        notifyDataSetChanged();
     }
 }

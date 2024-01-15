@@ -4,21 +4,27 @@ import static java.lang.System.out;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class QuizPage extends AppCompatActivity {
+
     ListView listView;
+    private TabLayout tabLayout;
     TextView textView;
     String[] listItem;
 
@@ -65,10 +71,69 @@ public class QuizPage extends AppCompatActivity {
                 return false;
             }
         });
+
+
+        // Initialize TabLayout
+        tabLayout = findViewById(R.id.tabLayoutSubjects);
+
+        // Set tab click listener
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                // Change background color and text color when tab is selected
+                tab.view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.orange));
+                TextView tabText = (TextView) tab.view.getChildAt(1);
+                tabText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+
+                // Update quiz list or perform any other action
+                updateQuizList(tab.getPosition());
+
+                updateTabLayout(tabLayout);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Change background color and text color of the unselected tab to the default color
+                tab.view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.background));
+                TextView tabText = (TextView) tab.view.getChildAt(1);
+                tabText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // You may choose to handle reselection differently if needed
+            }
+        });
+
         setupQuizListView();
         generateQuizItems();
     }
-        // Method to set up the ListView
+
+    private void updateTabLayout(TabLayout tabLayout) {
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null) {
+                View tabView = tab.view;
+                if (tab.isSelected()) {
+                    // Apply rounded corners for the selected tab
+                    tabView.setBackgroundResource(R.drawable.rounded_tab_layout_background);
+                } else {
+                    tabView.setBackgroundResource(android.R.color.transparent);
+                }
+            }
+        }
+    }
+
+    private void updateQuizList(int position) {
+        // Always set the background color of the quiz list to orange
+//        listView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.orange));
+
+        // Perform other actions if needed based on the selected subject (position)
+        // For example, you can filter the quiz items based on the selected subject and update the adapter
+        // quizAdapter.updateQuizItems(getFilteredQuizItems(position));
+    }
+        // Method to set up thqe ListView
         private void setupQuizListView() {
             listView = findViewById(R.id.listViewQuizzes);
             Log.d("QuizListView", "Inside listView method"); // Log a message

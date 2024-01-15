@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
+    <item android:left="8dp" android:right="8dp" android:top="10dp"> <!-- Adjust the left and right values to make it narrower -->
         <shape android:shape="rectangle">
             <solid android:color="#F0F0F0" />
             <corners android:radius="10dp" />
