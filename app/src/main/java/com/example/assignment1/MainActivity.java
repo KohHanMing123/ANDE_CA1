@@ -21,6 +21,10 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +42,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setProjectId("YOUR_PROJECT_ID")
+                .setApplicationId("YOUR_APPLICATION_ID")
+                .setApiKey("YOUR_API_KEY")
+                .build();
+        FirebaseApp.initializeApp(this, options);
+        // Write a message to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("message");
+        myRef.setValue("Hello, World!");
         // Initialize and assign variable
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
 
