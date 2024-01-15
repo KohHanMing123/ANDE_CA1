@@ -15,4 +15,9 @@
 
     <string name="quiz_name_5">Quiz 5</string>
     <string name="subtext_5">Idk man begin something</string>
+
+    <string name="firebase_project_id">andeca2-b5af6</string>
+    <string name="firebase_url">https://andeca2-b5af6-default-rtdb.asia-southeast1.firebasedatabase.app/</string>
+    <string name="firebase_app_id">1:590903525065:android:1b622cff39e82e8a631718</string>
+    <string name="firebase_api_key">AIzaSyDmoAYjWVoJmz0JnSagYf_qMppU93I6bKc</string>
 </resources>

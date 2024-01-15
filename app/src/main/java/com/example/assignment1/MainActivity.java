@@ -42,16 +42,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        System.out.println(String.valueOf(R.string.firebase_url));
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setProjectId("YOUR_PROJECT_ID")
-                .setApplicationId("YOUR_APPLICATION_ID")
-                .setApiKey("YOUR_API_KEY")
+                .setDatabaseUrl("https://andeca2-b5af6-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .setApplicationId("1:590903525065:android:1b622cff39e82e8a631718")
+                .setApiKey("AIzaSyDmoAYjWVoJmz0JnSagYf_qMppU93I6bKc")
+                .setProjectId("andeca2-b5af6")
                 .build();
+
         FirebaseApp.initializeApp(this, options);
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-        myRef.setValue("Hello, World!");
         // Initialize and assign variable
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
 
