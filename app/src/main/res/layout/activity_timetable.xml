@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFF7EB"
+    app:layout_anchorGravity="clip_vertical"
+    tools:context=".Timetable">
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20px"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnBackArrow"
+                android:layout_width="150px"
+                android:layout_height="match_parent"
+
+                android:background="#00FFFFFF"
+                android:scaleType="center"
+                android:src="@drawable/arrow" />
+
+            <TextView
+                android:id="@+id/textHeaderMonthYear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/lexend_medium"
+                android:gravity="center"
+                android:paddingRight="150px"
+                android:text="Month Year"
+                android:textSize="30dp" />
+
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="290dp"
+            android:layout_marginTop="20dp"
+            android:background="#00FFFFFF"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="10dp"
+
+            >
+
+            <CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="371dp"
+                android:layout_height="367dp"
+                android:layout_gravity="center_horizontal|top"
+                android:background="#FFFFFF"
+                android:calendarTextColor="#00FFFFFF"
+                android:datePickerMode="spinner"
+                android:dateTextAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:focusedMonthDateColor="#4E2424"
+                android:onClick="onClick"
+                android:selectedWeekBackgroundColor="#FFFFFF"
+                android:spinnersShown="false"
+                android:translationY="-30dp" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="40px"
+            android:paddingBottom="6dp">
+
+            <Button
+                android:id="@+id/btnTimetable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="@drawable/orange_line"
+                android:fontFamily="@font/lexend_medium"
+                android:foregroundGravity="center"
+                android:onClick="onClick"
+                android:paddingTop="12dp"
+                android:text="Timetable"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/btnExam"
+                android:layout_width="78dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="0"
+                android:background="#00FFFFFF"
+                android:fontFamily="@font/lexend_medium"
+                android:foregroundGravity="center"
+                android:onClick="onClick"
+                android:paddingTop="12dp"
+                android:text="Exam"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewDateDisplay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20px"
+            android:fontFamily="@font/lexend_medium"
+            android:paddingLeft="40px"
+            android:text="Date Display"
+            android:textColor="@color/orange"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#144975"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menu_nav" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

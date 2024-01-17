@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.calendar) {
-                    startActivity(new Intent(getApplicationContext(), EditPage.class));
+                    startActivity(new Intent(getApplicationContext(), Timetable.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.form) {
