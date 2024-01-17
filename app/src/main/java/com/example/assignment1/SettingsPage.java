@@ -5,16 +5,29 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SettingsPage extends AppCompatActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_page);
+
+
 
         // Initialize and assign variable
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
@@ -54,4 +67,21 @@ public class SettingsPage extends AppCompatActivity {
             }
         });
     }
+
+    public void onClick(View v) {
+        // Check which view was clicked
+        if (v.getId() == R.id.logout_btn) {
+            EditText eEmail = (EditText) findViewById(R.id.email_input);
+            String email = eEmail.getText().toString();
+            EditText ePwd = (EditText) findViewById(R.id.password_input);
+            String password = ePwd.getText().toString();
+            Toast.makeText(SettingsPage.this, "Signing out",
+                    Toast.LENGTH_SHORT).show();
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(this, LoginPage.class);
+            startActivity(intent);
+        }
+    }
+
+
 }

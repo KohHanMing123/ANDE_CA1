@@ -32,7 +32,7 @@
                 android:layout_gravity="center_horizontal"
                 android:background="#F0F0F0"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="30dp">
 
                 <TextView
                     android:id="@+id/loginText"
@@ -61,13 +61,13 @@
                     app:cardElevation="4dp">
 
                     <EditText
-                        android:id="@+id/username"
+                        android:id="@+id/email_input"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:drawableRight="@drawable/person"
                         android:drawablePadding="8dp"
                         android:drawableTint="@color/black"
-                        android:hint="Username"
+                        android:hint="Email"
                         android:padding="8dp"
                         android:background="@android:color/transparent"
                         android:textColor="@color/black"
@@ -84,7 +84,7 @@
                     app:cardElevation="4dp">
 
                     <EditText
-                        android:id="@+id/password"
+                        android:id="@+id/password_input"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:drawableRight="@drawable/lock"
@@ -170,6 +170,12 @@
                         android:textAllCaps="false"
                         />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/biometrics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="use biometrics" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

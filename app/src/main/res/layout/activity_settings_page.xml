@@ -37,5 +37,21 @@
             app:itemTextColor="@drawable/selector"
             app:menu="@menu/menu_nav" />
 
+        <Button
+            android:id="@+id/logout_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bottom_navigation"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="34dp"
+            android:layout_marginEnd="290dp"
+            android:layout_marginBottom="36dp"
+            android:background="@color/maroon"
+            android:textColor="@color/white"
+            android:shadowRadius="30"
+            android:onClick="onClick"
+            android:text="Logout" />
+
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
