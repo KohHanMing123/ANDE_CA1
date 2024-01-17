@@ -1,9 +1,9 @@
 package com.example.assignment1;
 
 public class QuizItem {
-    private String quizName;
-    private String quizDescription;
-    private String subject;
+    private final String quizName;
+    private final String quizDescription;
+    private final String subject;
 
 
     public QuizItem(String quizName, String quizDescription, String subject) {

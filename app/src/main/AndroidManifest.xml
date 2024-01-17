@@ -19,9 +19,6 @@
             android:exported="false"
             />
         <activity
-            android:name=".EnableBiometricLoginActivity"
-            android:exported="false" />
-        <activity
             android:name=".SplashScreen"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -61,7 +58,7 @@
         </activity>
         <activity
             android:name=".LoginPage"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

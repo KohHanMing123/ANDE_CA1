@@ -11,8 +11,8 @@ import android.widget.TextView;
 import java.util.List;
 
 public class HomeworkListAdapter extends BaseAdapter {
-    private Context context;
-    private List<HomeworkItem> homeworkItems;
+    private final Context context;
+    private final List<HomeworkItem> homeworkItems;
 
     public HomeworkListAdapter(Context context, List<HomeworkItem> homeworkItems) {
         this.context = context;

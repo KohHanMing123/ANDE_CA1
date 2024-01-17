@@ -47,10 +47,10 @@
             android:layout_marginStart="34dp"
             android:layout_marginEnd="290dp"
             android:layout_marginBottom="36dp"
-            android:background="@color/maroon"
+            android:background="#a80300"
             android:textColor="@color/white"
             android:shadowRadius="30"
-            android:onClick="onClick"
+            android:onClick="onClickLogout"
             android:text="Logout" />
 
     </RelativeLayout>

@@ -1,7 +1,8 @@
 package com.example.assignment1;
 
 public class HomeworkItem {
-    private String homeworkTitle, homeworkSubject;
+    private final String homeworkTitle;
+    private final String homeworkSubject;
 
     public HomeworkItem(String homeworkTitle, String homeworkSubject) {
         this.homeworkTitle = homeworkTitle;

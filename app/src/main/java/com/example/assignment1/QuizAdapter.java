@@ -15,8 +15,8 @@ import java.util.List;
 public class QuizAdapter extends BaseAdapter {
     private static final String TAG = QuizAdapter.class.getSimpleName();
 
-    private Context context;
-    private List<QuizItem> quizItems;
+    private final Context context;
+    private final List<QuizItem> quizItems;
 
     public QuizAdapter(Context context, List<QuizItem> quizItems) {
         this.context = context;

@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Timetable extends AppCompatActivity implements View.OnClickListener {
-    private long selectedDate = -1;
+    private final long selectedDate = -1;
     private GestureDetector gestureDetector;
     @SuppressLint("ClickableViewAccessibility")
     @Override

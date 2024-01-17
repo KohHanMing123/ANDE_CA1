@@ -18,9 +18,11 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +31,18 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     TextView textView, announcementTextView;
     ImageSwitcher announcementImageSwitcher;
-    private int[] announcementImages = {R.drawable.books, R.drawable.assembly_announcement, R.drawable.recess_party};
-    private String[] announcementText = {"National Book Day on 25 November!", "Joakim & Sonia this Wednesday!", "Recess Party on 1 December!"};
+    private final int[] announcementImages = {R.drawable.books, R.drawable.assembly_announcement, R.drawable.recess_party};
+    private final String[] announcementText = {"National Book Day on 25 November!", "Joakim & Sonia this Wednesday!", "Recess Party on 1 December!"};
     private int currentIndex = 0;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     String[] listItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseAuth user = FirebaseAuth.getInstance();
+        Toast.makeText(this, "Main Activity", Toast.LENGTH_SHORT).show();
 
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
 
@@ -135,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         return homeworkItems;
     }
 
-    private Runnable announcementSwitchRunnable = new Runnable() {
+    private final Runnable announcementSwitchRunnable = new Runnable() {
         @Override
         public void run() {
             // Update index and switch image

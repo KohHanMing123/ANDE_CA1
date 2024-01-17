@@ -39,8 +39,8 @@ public class QuizPage extends AppCompatActivity {
     List<QuizItem> quizItems;
 
 
-    private Set<String> uniqueSubjects = new HashSet<>();
-    private Map<String, List<QuizItem>> quizzesBySubject = new HashMap<>();
+    private final Set<String> uniqueSubjects = new HashSet<>();
+    private final Map<String, List<QuizItem>> quizzesBySubject = new HashMap<>();
 
 
     @Override

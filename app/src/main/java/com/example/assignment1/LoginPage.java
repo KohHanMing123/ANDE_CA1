@@ -7,15 +7,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.content.Intent;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginPage extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth mAuth;
@@ -24,8 +26,8 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Initialize and assign variable
         setContentView(R.layout.activity_login_page);
-
         mAuth = FirebaseAuth.getInstance();
     }
     @Override
@@ -36,8 +38,6 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
             String email = eEmail.getText().toString();
             EditText ePwd = (EditText) findViewById(R.id.password_input);
             String password = ePwd.getText().toString();
-
-
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -45,10 +45,11 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                Toast.makeText(LoginPage.this, "Authentication success.",
+                                Toast.makeText(LoginPage.this, "Signed in again",
                                         Toast.LENGTH_SHORT).show();
-//
+                                Intent intent = new Intent(LoginPage.this, MainActivity.class);
+                                startActivity(intent);
+
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -59,26 +60,18 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                     });
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        try {
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if(currentUser != null){
-                Toast.makeText(LoginPage.this, currentUser.toString(),
-                        Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-            }
-        } catch (NullPointerException e){
-            Toast.makeText(LoginPage.this, "Please sign in .",
-                    Toast.LENGTH_SHORT).show();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            Toast.makeText(LoginPage.this, currentUser.getEmail(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+        } else {
+            Toast.makeText(LoginPage.this, "No Authentication", Toast.LENGTH_SHORT).show();
         }
-
     }
-
 
 }

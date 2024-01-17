@@ -19,18 +19,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SettingsPage extends AppCompatActivity {
-
-
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_page);
 
-
-
         // Initialize and assign variable
-        BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         // Set Home selected
         bottomNavigationView.setSelectedItemId(R.id.form);
@@ -49,7 +46,7 @@ public class SettingsPage extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), HomeworkPage.class));
                     overridePendingTransition(0, 0);
                     return true;
-                }  else if (itemId == R.id.time) {
+                } else if (itemId == R.id.time) {
                     startActivity(new Intent(getApplicationContext(), QuizPage.class));
                     overridePendingTransition(0, 0);
                     return true;
@@ -68,20 +65,15 @@ public class SettingsPage extends AppCompatActivity {
         });
     }
 
-    public void onClick(View v) {
+    public void onClickLogout(View v) {
         // Check which view was clicked
         if (v.getId() == R.id.logout_btn) {
-            EditText eEmail = (EditText) findViewById(R.id.email_input);
-            String email = eEmail.getText().toString();
-            EditText ePwd = (EditText) findViewById(R.id.password_input);
-            String password = ePwd.getText().toString();
-            Toast.makeText(SettingsPage.this, "Signing out",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Log out button was pressed", Toast.LENGTH_SHORT).show();
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(this, LoginPage.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     }
-
 
 }
