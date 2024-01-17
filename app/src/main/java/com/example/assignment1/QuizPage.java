@@ -1,7 +1,5 @@
 package com.example.assignment1;
 
-import static java.lang.System.out;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -10,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -17,9 +16,18 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class QuizPage extends AppCompatActivity {
 
@@ -27,12 +35,73 @@ public class QuizPage extends AppCompatActivity {
     private TabLayout tabLayout;
     TextView textView;
     String[] listItem;
+    private DatabaseReference databaseReference;
+    List<QuizItem> quizItems;
+
+
+    private Set<String> uniqueSubjects = new HashSet<>();
+    private Map<String, List<QuizItem>> quizzesBySubject = new HashMap<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_page);
         Log.d("CurrentPage", "iM INSIDE QuizPage.java");
+
+        // Initialize listView
+        listView = findViewById(R.id.listViewQuizzes);
+
+
+        quizItems = new ArrayList<>();
+        // Your Firebase database reference
+        databaseReference = FirebaseDatabase.getInstance().getReference("Quiz");
+
+        // Add a listener to fetch data
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                uniqueSubjects.clear(); // Clear the set before adding new items
+
+                // Map to store quizzes organized by subjects
+                quizzesBySubject.clear(); // Clear the class-level variable
+
+                for (DataSnapshot subjectSnapshot : dataSnapshot.getChildren()) {
+                    String subjectName = subjectSnapshot.getKey(); // Get subject name
+                    uniqueSubjects.add(subjectName);
+                    Log.d("FirebaseData", "Subject Name: " + subjectName);
+
+                    List<QuizItem> subjectQuizzes = new ArrayList<>();
+
+                    for (DataSnapshot quizSnapshot : subjectSnapshot.getChildren()) {
+                        String quizTitle = quizSnapshot.child("quiz_title").getValue(String.class);
+                        String quizDescription = quizSnapshot.child("quiz_description").getValue(String.class);
+
+                        // Log the data
+                        Log.d("FirebaseData", "Quiz Title: " + quizTitle);
+                        Log.d("FirebaseData", "Quiz Description: " + quizDescription);
+
+                        subjectQuizzes.add(new QuizItem(quizTitle, quizDescription, subjectName));
+                    }
+
+                    // Log the quizzes within the subject
+                    Log.d("FirebaseData", "Quizzes for Subject " + subjectName + ": " + subjectQuizzes);
+
+                    // Add quizzes for the subject to the map
+                    quizzesBySubject.put(subjectName, subjectQuizzes);
+                }
+                Log.d("hello", String.valueOf(quizzesBySubject.keySet()));
+
+                // Update the UI with the retrieved data
+                updateUI(quizzesBySubject, uniqueSubjects);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Failed to read value
+                Log.w("FirebaseData", "Failed to read value.", databaseError.toException());
+            }
+        });
 
         // Initialize and assign variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -80,24 +149,45 @@ public class QuizPage extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
                 // Change background color and text color when tab is selected
                 tab.view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.orange));
-                TextView tabText = (TextView) tab.view.getChildAt(1);
-                tabText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
 
-                // Update quiz list or perform any other action
-                updateQuizList(tab.getPosition());
+                // Get the TextView from the custom layout of the selected tab
+                TextView tabText = tab.getCustomView().findViewById(R.id.customTabText);
 
-                updateTabLayout(tabLayout);
+                if (tabText != null) {
+                    tabText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                }
+
+                // Update quiz list for the selected subject
+                String selectedSubject = tabText.getText().toString();
+                Log.d("selected subject is", selectedSubject);
+
+                // Log the contents of quizzesBySubject for debugging purposes
+                Log.d("FirebaseData", "All subjects in quizzesBySubject: " + quizzesBySubject.keySet());
+
+                if (quizzesBySubject.containsKey(selectedSubject)) {
+                    // Create a new instance of QuizAdapter every time the tab is selected
+                    QuizAdapter quizAdapter = new QuizAdapter(getApplicationContext(), quizzesBySubject.get(selectedSubject));
+                    listView.setAdapter(quizAdapter);
+                } else {
+                    Log.e("FirebaseData", "No data found for subject: " + selectedSubject);
+                }
+
+                updateTabLayout(tabLayout, uniqueSubjects);
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 // Change background color and text color of the unselected tab to the default color
                 tab.view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.background));
-                TextView tabText = (TextView) tab.view.getChildAt(1);
-                tabText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+
+                // Get the TextView from the custom layout of the unselected tab
+                TextView tabText = tab.getCustomView().findViewById(R.id.customTabText);
+
+                if (tabText != null) {
+                    tabText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                }
             }
 
             @Override
@@ -106,11 +196,11 @@ public class QuizPage extends AppCompatActivity {
             }
         });
 
-        setupQuizListView();
-        generateQuizItems();
+//        updateQuizListView(quizItems);
+//        generateQuizItems();
     }
 
-    private void updateTabLayout(TabLayout tabLayout) {
+    private void updateTabLayout(TabLayout tabLayout, Set<String> uniqueSubjects) {
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             if (tab != null) {
@@ -124,59 +214,95 @@ public class QuizPage extends AppCompatActivity {
             }
         }
     }
+    private void createTabs(Set<String> uniqueSubjects) {
+        // Clear existing tabs
+        tabLayout.removeAllTabs();
 
-    private void updateQuizList(int position) {
-        // Always set the background color of the quiz list to orange
-//        listView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.orange));
+        for (String subject : uniqueSubjects) {
+            // Create a new tab
+            TabLayout.Tab tab = tabLayout.newTab();
 
-        // Perform other actions if needed based on the selected subject (position)
-        // For example, you can filter the quiz items based on the selected subject and update the adapter
-        // quizAdapter.updateQuizItems(getFilteredQuizItems(position));
+            // Inflate the custom_tab_item.xml layout
+            View customTabView = LayoutInflater.from(this).inflate(R.layout.custom_tab_item, null);
+
+            // Find the TextView in the custom layout and set its text
+            TextView textView = customTabView.findViewById(R.id.customTabText);
+            Log.d("custom tab subject", subject);
+            textView.setText(subject);
+
+            // Set the custom view for the tab
+            tab.setCustomView(customTabView);
+
+            // Add the tab to the TabLayout
+            tabLayout.addTab(tab);
+        }
     }
-        // Method to set up thqe ListView
-        private void setupQuizListView() {
-            listView = findViewById(R.id.listViewQuizzes);
-            Log.d("QuizListView", "Inside listView method"); // Log a message
 
-            List<QuizItem> quizItems = generateQuizItems(); // method to create your list
-            Log.d("QuizListView", "QuizItems: " + quizItems); // Log quizItems
+    // Update the UI with the retrieved data
+    private void updateUI(Map<String, List<QuizItem>> quizzesBySubject, Set<String> uniqueSubjects) {
+        // Update the tab layout
+        updateTabLayout(tabLayout, uniqueSubjects);
+        createTabs(uniqueSubjects);
 
+        // Choose a default subject or implement logic to select a subject
+        String selectedSubject = uniqueSubjects.iterator().next();
+
+        // Update the quiz list view for the default subject
+        setupQuizListView(quizzesBySubject.get(selectedSubject));
+    }
+
+
+    private void setupQuizListView(List<QuizItem> quizItems) {
+        Log.d("setupquizlistview","Setting up QuizListView with " + quizItems.size() + " items");
+
+        listView = findViewById(R.id.listViewQuizzes);
+
+        if (listView != null) {
             QuizAdapter quizAdapter = new QuizAdapter(this, quizItems);
             listView.setAdapter(quizAdapter);
-            Log.d("QuizListView", "ListView: " + listView); // Log listView
-
+        } else {
+            Log.e("ListViewError", "ListView is null. Make sure it is properly initialized in your layout.");
         }
-
-    private List<QuizItem> generateQuizItems() {
-        Log.d("QuizPage", "Inside generateQuizItems method");
-
-        List<QuizItem> quizItems = new ArrayList<>();
-
-        String quizName1 = getString(R.string.quiz_name_1);
-        String subtext1 = getString(R.string.subtext_1);
-        quizItems.add(new QuizItem(quizName1, subtext1));
-
-        String quizName2 = getString(R.string.quiz_name_2);
-        String subtext2 = getString(R.string.subtext_2);
-        quizItems.add(new QuizItem(quizName2, subtext2));
-
-        String quizName3 = getString(R.string.quiz_name_3);
-        String subtext3 = getString(R.string.subtext_3);
-        quizItems.add(new QuizItem(quizName3, subtext3));
-
-        String quizName4 = getString(R.string.quiz_name_4);
-        String subtext4 = getString(R.string.subtext_4);
-        quizItems.add(new QuizItem(quizName4, subtext4));
-
-        String quizName5 = getString(R.string.quiz_name_5);
-        String subtext5 = getString(R.string.subtext_5);
-        quizItems.add(new QuizItem(quizName5, subtext5));
-
-
-        Log.d("QuizItemsRes", "QuizItems: " + quizItems);
-
-        return quizItems;
     }
+    // Modify the method to update the QuizAdapter and notify the changes
+//    private void updateQuizListView(List<QuizItem> quizItems) {
+//        QuizAdapter quizAdapter = (QuizAdapter) listView.getAdapter();
+//        if (quizAdapter != null) {
+//            quizAdapter.updateData(quizItems);
+//        } else {
+//            quizAdapter = new QuizAdapter(this, quizItems);
+//            listView.setAdapter(quizAdapter);
+//        }
+//    }
+
+//    private List<QuizItem> generateQuizItems() {
+//        Log.d("QuizPage", "Inside generateQuizItems method");
+//
+//        List<QuizItem> quizItems = new ArrayList<>();
+//
+//        String quizName1 = getString(R.string.quiz_name_1);
+//        String subtext1 = getString(R.string.subtext_1);
+//        quizItems.add(new QuizItem(quizName1, subtext1));
+//
+//        String quizName2 = getString(R.string.quiz_name_2);
+//        String subtext2 = getString(R.string.subtext_2);
+//        quizItems.add(new QuizItem(quizName2, subtext2));
+//
+//        String quizName3 = getString(R.string.quiz_name_3);
+//        String subtext3 = getString(R.string.subtext_3);
+//        quizItems.add(new QuizItem(quizName3, subtext3));
+//
+//        String quizName4 = getString(R.string.quiz_name_4);
+//        String subtext4 = getString(R.string.subtext_4);
+//        quizItems.add(new QuizItem(quizName4, subtext4));
+//
+//        String quizName5 = getString(R.string.quiz_name_5);
+//        String subtext5 = getString(R.string.subtext_5);
+//        quizItems.add(new QuizItem(quizName5, subtext5));
+//
+//
+//        Log.d("QuizItemsRes", "QuizItems: " + quizItems);
+//
+//        return quizItems;
+//    }
 }
-
-

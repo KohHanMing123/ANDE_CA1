@@ -45,34 +45,7 @@
              android:layout_marginTop="30dp"
              android:layout_marginLeft="10dp"
              android:layout_marginRight="10dp"
-             app:tabGravity="fill">
-
-            <com.google.android.material.tabs.TabItem
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout="@layout/custom_tab_item"
-                android:text="Math"/>
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout="@layout/custom_tab_item"
-                android:text="Science"/>
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout="@layout/custom_tab_item"
-                android:text="English"/>
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout="@layout/custom_tab_item"
-                android:text="Mother. T"/>
-
-         </com.google.android.material.tabs.TabLayout>
+             app:tabGravity="fill" />
 
          <!-- Vertical ListView for quizzes -->
          <ListView

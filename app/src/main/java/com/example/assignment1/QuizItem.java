@@ -2,18 +2,23 @@ package com.example.assignment1;
 
 public class QuizItem {
     private String quizName;
-    private String subtext;
+    private String quizDescription;
+    private String subject;
 
-    public QuizItem(String quizName, String subtext) {
+
+    public QuizItem(String quizName, String quizDescription, String subject) {
         this.quizName = quizName;
-        this.subtext = subtext;
+        this.quizDescription = quizDescription;
+        this.subject = subject;
     }
 
     public String getQuizName() {
         return quizName;
     }
 
-    public String getSubtext() {
-        return subtext;
+    public String getQuizDescription() {
+        return quizDescription;
     }
+
+    public String getSubject() { return subject; }
 }
