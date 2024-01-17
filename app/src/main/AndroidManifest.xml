@@ -15,6 +15,10 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
+            android:name=".Timetable"
+            android:exported="false"
+            />
+        <activity
             android:name=".EnableBiometricLoginActivity"
             android:exported="false" />
         <activity
