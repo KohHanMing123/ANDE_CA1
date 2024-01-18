@@ -2,11 +2,16 @@ package com.example.assignment1;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -16,82 +21,67 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class QuizDetail extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
 
-    private DatabaseReference databaseReference;
+public class QuizDetail extends AppCompatActivity {
+    private String quizTitle;
+    private ViewPager viewPager;
+    private QuizPagerAdapter adapter;
+    private int currentPosition = 0; // to track current question position
+    private ProgressBar progressBar;
+    private TextView questionCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_detail);
 
-        Log.d("Current page", "im inside QuizDetail");
-        String quizTitle = getIntent().getStringExtra("quizTitle");
-
+        quizTitle = getIntent().getStringExtra("quizTitle");
         TextView titleTextView = findViewById(R.id.quizTitle);
         titleTextView.setText(quizTitle);
 
-        // Retrieve quiz questions and options from Firebase for a specific subject
-        DatabaseReference quizReference = FirebaseDatabase.getInstance().getReference("Quiz");
+        progressBar = findViewById(R.id.progressBar);
+        questionCount = findViewById(R.id.questionCount);
+        viewPager = findViewById(R.id.viewPager);
 
-        quizReference.addValueEventListener(new ValueEventListener() {
+        fetchQuestionsAndSetupUI();
+    }
+
+    private void fetchQuestionsAndSetupUI() {
+        DatabaseReference quizReference = FirebaseDatabase.getInstance().getReference("Quiz");
+        quizReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("QuizDetail", "Quiz DataSnapshot: " + dataSnapshot);
+                List<Question> questions = new ArrayList<>();
 
-                // Check if the dataSnapshot has child nodes
-                if (dataSnapshot.hasChildren()) {
-                    for (DataSnapshot subjectSnapshot : dataSnapshot.getChildren()) {
-                        for (DataSnapshot quizSnapshot : subjectSnapshot.getChildren()) {
-                            String currentQuizTitle = quizSnapshot.child("quiz_title").getValue(String.class);
-                            if (quizTitle.equals(currentQuizTitle)) {
-                                // Create a TextView for the quiz title
-                                TextView quizTitleTextView = new TextView(QuizDetail.this);
-                                quizTitleTextView.setText(currentQuizTitle);
-
-                                // Add the quiz title TextView to the layout
-                                LinearLayout layout = findViewById(R.id.questionsLayout);
-                                layout.addView(quizTitleTextView);
-
-                                // Iterate through quiz questions
-                                for (DataSnapshot questionSnapshot : quizSnapshot.child("quiz_questions").getChildren()) {
-                                    String questionTitle = questionSnapshot.child("question_title").getValue(String.class);
-                                    Log.d("QuizDetail", "Question Title: " + questionTitle);
-
-                                    // Create a TextView for the question
-                                    TextView questionTextView = new TextView(QuizDetail.this);
-                                    questionTextView.setText(questionTitle);
-
-                                    // Add the question TextView to the layout
-                                    layout.addView(questionTextView);
-
-                                    // Iterate through options for each question
-                                    for (DataSnapshot optionSnapshot : questionSnapshot.child("options").getChildren()) {
-                                        String optionTitle = String.valueOf(optionSnapshot.child("option_title").getValue());
-                                        boolean isCorrect = optionSnapshot.child("correct").getValue(Boolean.class);
-
-                                        Log.d("QuizDetail", "Option Title: " + optionTitle + ", Is Correct: " + isCorrect);
-
-                                        // Create a TextView for the option
-                                        TextView optionTextView = new TextView(QuizDetail.this);
-                                        optionTextView.setText(optionTitle);
-
-                                        layout.addView(optionTextView);
-
-                                        // Optionally, you can customize the UI based on correctness
-                                        if (isCorrect) {
-                                            optionTextView.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                                        }
-                                    }
+                for (DataSnapshot subjectSnapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot quizSnapshot : subjectSnapshot.getChildren()) {
+                        String currentQuizTitle = quizSnapshot.child("quiz_title").getValue(String.class);
+                        if (quizTitle.equals(currentQuizTitle)) {
+                            // Fetch questions for the quiz
+                            for (DataSnapshot questionSnapshot : quizSnapshot.child("quiz_questions").getChildren()) {
+                                String questionTitle = questionSnapshot.child("question_title").getValue(String.class);
+                                List<String> options = new ArrayList<>();
+                                for (DataSnapshot optionSnapshot : questionSnapshot.child("options").getChildren()) {
+                                    String optionTitle = optionSnapshot.child("option_title").getValue(String.class);
+                                    options.add(optionTitle);
                                 }
-                                // Exit the loop once you find the desired quiz
-                                break;
+                                questions.add(new Question(questionTitle, options));
                             }
+                            break;
                         }
                     }
-                } else {
-                    Log.e("QuizDetail", "DataSnapshot is empty or does not have children.");
                 }
+
+                adapter = new QuizPagerAdapter(getSupportFragmentManager(), questions);
+                viewPager.setAdapter(adapter);
+                setTitleAndNextButton();
+
+                // Set the initial title
+//                setTitle(currentPosition);
+
+                updateProgressBar();
             }
 
             @Override
@@ -100,7 +90,45 @@ public class QuizDetail extends AppCompatActivity {
             }
         });
     }
+
+    private void setTitleAndNextButton() {
+        Button nextButton = findViewById(R.id.nextButton);
+        if (nextButton != null) {
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Check if there is a next question
+                    if (currentPosition < adapter.getCount() - 1) {
+                        currentPosition++;
+                        viewPager.setCurrentItem(currentPosition);
+//                        setTitle(currentPosition);
+
+                        updateProgressBar();
+                    } else {
+                        Toast.makeText(QuizDetail.this, "No more questions", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        } else {
+            Log.e("QuizDetail", "nextButton is null");
+        }
+    }
+
+    private void updateProgressBar() {
+        int totalQuestions = adapter.getCount();
+        int progress = (int) (((float) (currentPosition + 1) / totalQuestions) * 100);
+        progressBar.setProgress(progress);
+        questionCount.setText("Question " + (currentPosition + 1) + "/" + totalQuestions);
+    }
+
+    public void setTitle(int position) {
+        getSupportActionBar().setTitle("Question " + (position + 1));
+    }
 }
+
+
+
+
 
 // Your Firebase database reference
 //        databaseReference = FirebaseDatabase.getInstance().getReference("Quiz");
