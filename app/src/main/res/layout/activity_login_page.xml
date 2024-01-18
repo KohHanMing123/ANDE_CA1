@@ -67,7 +67,7 @@
                         android:drawableRight="@drawable/person"
                         android:drawablePadding="8dp"
                         android:drawableTint="@color/black"
-                        android:hint="Email"
+                        android:hint="Email (required)"
                         android:padding="8dp"
                         android:background="@android:color/transparent"
                         android:textColor="@color/black"
@@ -90,7 +90,7 @@
                         android:drawableRight="@drawable/lock"
                         android:drawableTint="@color/black"
                         android:drawablePadding="8dp"
-                        android:hint="Password"
+                        android:hint="Password (required)"
                         android:inputType="textPassword"
                         android:padding="8dp"
                         android:textColor="@color/black"
@@ -105,11 +105,10 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <RadioButton
-                        android:id="@+id/RMrb"
+                    <CheckBox
+                        android:id="@+id/rmb_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:editable="true"
                         android:text="Remember Me"
                         android:textColor="#808080"
                         android:textSize="12sp"
@@ -171,11 +170,6 @@
                         />
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/biometrics"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="use biometrics" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

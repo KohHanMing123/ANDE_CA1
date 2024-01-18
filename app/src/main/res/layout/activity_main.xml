@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
@@ -60,6 +59,7 @@
                     android:layout_width="90px"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10px"
+                    android:onClick="onClick"
                     android:layout_weight="1"
                     android:background="@drawable/background_orange_rounded"
                     android:clickable="true"
