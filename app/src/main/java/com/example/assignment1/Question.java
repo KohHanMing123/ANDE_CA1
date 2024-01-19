@@ -11,6 +11,7 @@ public class Question {
     public Question(String questionTitle, List<String> options, boolean[] isOptionCorrect) {
         this.questionTitle = questionTitle;
         this.options = options;
+        this.isOptionCorrect = isOptionCorrect;
     }
 
     public String getQuestionTitle() {

@@ -20,7 +20,9 @@ import java.util.List;
 public class QuestionFragment extends Fragment {
     private String questionTitle;
     private List<String> options;
-    private boolean[] isOptionCorrect; // Array to store the correctness of each option
+    private boolean[] isOptionCorrect;
+    private Button[] optionButtons;
+
 
     public static QuestionFragment newInstance(String questionTitle, List<String> options, boolean[] isCorrectArray) {
         QuestionFragment fragment = new QuestionFragment();
@@ -29,6 +31,7 @@ public class QuestionFragment extends Fragment {
         args.putStringArrayList("options", (ArrayList<String>) options);
         args.putBooleanArray("isCorrectArray", isCorrectArray);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -41,12 +44,11 @@ public class QuestionFragment extends Fragment {
 
         LinearLayout optionsLayout = view.findViewById(R.id.optionsLayout);
 
-        if (options != null) {
-            isOptionCorrect = new boolean[options.size()]; // Initialize the array
-
+        if (options != null && isOptionCorrect != null && options.size() == isOptionCorrect.length) {
+            optionButtons = new Button[options.size()];
             for (int i = 0; i < options.size(); i++) {
-                Button optionButton = createOptionButton(options.get(i), i, isOptionCorrect[i]);
-                optionsLayout.addView(optionButton);
+                optionButtons[i] = createOptionButton(options.get(i), i, isOptionCorrect[i]);
+                optionsLayout.addView(optionButtons[i]);
             }
         }
 
@@ -84,10 +86,42 @@ public class QuestionFragment extends Fragment {
 
         Log.d("QuestionFragment", "Selected Option " + selectedOptionIndex + " isCorrect: " + isCorrect);
 
+        disableAllButtons();
+
+        for (int i = 0; i < optionButtons.length; i++) {
+            Button currentButton = optionButtons[i];
+
+            if (isOptionCorrect[i]) {
+                currentButton.setBackgroundResource(R.drawable.correct_button_background);
+            } else {
+                // Incorrect option or unselected option
+                if (i == selectedOptionIndex) {
+                    // Selected option
+                    if (isCorrect) {
+                        // Correct option
+                        currentButton.setBackgroundResource(R.drawable.correct_button_background);
+                    } else {
+                        // Incorrect option
+                        currentButton.setBackgroundResource(R.drawable.incorrect_button_background);
+                    }
+                } else {
+                    // Unselected and not correct option
+                    currentButton.setBackgroundResource(R.drawable.rounded_button_background);
+                }
+            }
+        }
+
         if (isCorrect) {
             showToast("Correct");
         } else {
             showToast("Incorrect");
+        }
+    }
+
+
+    private void disableAllButtons() {
+        for (Button button : optionButtons) {
+            button.setEnabled(false);
         }
     }
 
@@ -107,9 +141,16 @@ public class QuestionFragment extends Fragment {
         }
 
         if (isOptionCorrect != null) {
+            Log.d("QuestionFragment", "onCreate - isOptionCorrect size: " + isOptionCorrect.length);
             for (int i = 0; i < isOptionCorrect.length; i++) {
-                Log.d("QuestionFragment", "Option " + i + " isCorrect: " + isOptionCorrect[i]);
+                Log.d("QuestionFragment", "onCreate - Option " + i + " isCorrect: " + isOptionCorrect[i]);
             }
+        } else {
+            Log.d("QuestionFragment", "onCreate - isOptionCorrect is null");
+        }
+
+        if (isOptionCorrect == null) {
+            isOptionCorrect = new boolean[options.size()];
         }
     }
 }
