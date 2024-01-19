@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,6 +47,14 @@ public class QuizDetail extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
 
         fetchQuestionsAndSetupUI();
+
+        ImageView backArrow = findViewById(R.id.quizBackArrow);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish(); // This will finish the current activity and go back to the previous one
+            }
+        });
     }
 
     private void fetchQuestionsAndSetupUI() {
@@ -63,11 +72,21 @@ public class QuizDetail extends AppCompatActivity {
                             for (DataSnapshot questionSnapshot : quizSnapshot.child("quiz_questions").getChildren()) {
                                 String questionTitle = questionSnapshot.child("question_title").getValue(String.class);
                                 List<String> options = new ArrayList<>();
+                                boolean[] isCorrectArray = new boolean[(int) questionSnapshot.child("options").getChildrenCount()];
+
+                                int optionIndex = 0;
+
                                 for (DataSnapshot optionSnapshot : questionSnapshot.child("options").getChildren()) {
                                     String optionTitle = optionSnapshot.child("option_title").getValue(String.class);
+                                    boolean isCorrect = optionSnapshot.child("correct").getValue(Boolean.class); // to check for correct option
+
+                                    Log.d("QuizDetail", "Option Title: " + optionTitle + ", Is Correct: " + isCorrect);
+
                                     options.add(optionTitle);
+                                    isCorrectArray[optionIndex++] = isCorrect;
+
                                 }
-                                questions.add(new Question(questionTitle, options));
+                                questions.add(new Question(questionTitle, options, isCorrectArray));
                             }
                             break;
                         }
@@ -121,9 +140,6 @@ public class QuizDetail extends AppCompatActivity {
         questionCount.setText("Question " + (currentPosition + 1) + "/" + totalQuestions);
     }
 
-    public void setTitle(int position) {
-        getSupportActionBar().setTitle("Question " + (position + 1));
-    }
 }
 
 

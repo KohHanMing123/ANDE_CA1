@@ -7,35 +7,57 @@
     android:layout_height="match_parent"
     tools:context=".QuizDetail">
 
-    <!-- Quiz Title -->
-    <TextView
-        android:id="@+id/quizTitle"
-        android:layout_width="wrap_content"
+    <!-- Horizontal LinearLayout for Back Arrow and Quiz Title -->
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="#F6F0F0"
-        android:text="TextView"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="30dp"
+        android:background="@color/orange"
+        >
+
+        <!-- Back Arrow Icon -->
+        <ImageView
+            android:id="@+id/quizBackArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_back_ios_24"
+            android:contentDescription="Back Arrow"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="30dp"/>
+
+        <!-- Quiz Title -->
+        <TextView
+            android:id="@+id/quizTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="25dp"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <!-- Question Count and Progress Bar -->
     <TextView
         android:id="@+id/questionCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginRight="260dp"
+        android:paddingTop="10dp"
         android:text="Question 1/3"
         android:textColor="@android:color/black"
         android:textSize="17sp"
         android:textStyle="normal"
-        android:paddingTop="10dp"
-        android:layout_marginRight="260dp"
-        app:layout_constraintTop_toBottomOf="@id/quizTitle"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -58,7 +80,7 @@
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingTop="30dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintTop_toBottomOf="@id/progressBar"
         app:layout_constraintBottom_toTopOf="@+id/nextButton"
         app:layout_constraintStart_toStartOf="parent"

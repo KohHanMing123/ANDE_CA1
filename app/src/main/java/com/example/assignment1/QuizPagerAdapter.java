@@ -30,7 +30,7 @@ public class QuizPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         if (questions != null && position >= 0 && position < questions.size()) {
             Question question = questions.get(position);
-            return QuestionFragment.newInstance(question.getQuestionTitle(), question.getOptions());
+            return QuestionFragment.newInstance(question.getQuestionTitle(), question.getOptions(), question.getIsOptionCorrect());
         }
         return null;
     }
