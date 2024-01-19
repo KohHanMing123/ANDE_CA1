@@ -25,120 +25,121 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuizDetail extends AppCompatActivity {
-    private String quizTitle;
-    private ViewPager viewPager;
-    private QuizPagerAdapter adapter;
-    private int currentPosition = 0; // to track current question position
-    private ProgressBar progressBar;
-    private TextView questionCount;
+    public class QuizDetail extends AppCompatActivity {
+        private String quizTitle;
+        private ViewPager viewPager;
+        private QuizPagerAdapter adapter;
+        private int currentPosition = 0; // to track current question position
+        private ProgressBar progressBar;
+        private TextView questionCount;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz_detail);
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_quiz_detail);
 
-        quizTitle = getIntent().getStringExtra("quizTitle");
-        TextView titleTextView = findViewById(R.id.quizTitle);
-        titleTextView.setText(quizTitle);
+            quizTitle = getIntent().getStringExtra("quizTitle");
+            TextView titleTextView = findViewById(R.id.quizTitle);
+            titleTextView.setText(quizTitle);
 
-        progressBar = findViewById(R.id.progressBar);
-        questionCount = findViewById(R.id.questionCount);
-        viewPager = findViewById(R.id.viewPager);
+            progressBar = findViewById(R.id.progressBar);
+            questionCount = findViewById(R.id.questionCount);
+            viewPager = findViewById(R.id.viewPager);
 
-        fetchQuestionsAndSetupUI();
+            fetchQuestionsAndSetupUI();
 
-        ImageView backArrow = findViewById(R.id.quizBackArrow);
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // This will finish the current activity and go back to the previous one
-            }
-        });
-    }
-
-    private void fetchQuestionsAndSetupUI() {
-        DatabaseReference quizReference = FirebaseDatabase.getInstance().getReference("Quiz");
-        quizReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Question> questions = new ArrayList<>();
-
-                for (DataSnapshot subjectSnapshot : dataSnapshot.getChildren()) {
-                    for (DataSnapshot quizSnapshot : subjectSnapshot.getChildren()) {
-                        String currentQuizTitle = quizSnapshot.child("quiz_title").getValue(String.class);
-                        if (quizTitle.equals(currentQuizTitle)) {
-                            // Fetch questions for the quiz
-                            for (DataSnapshot questionSnapshot : quizSnapshot.child("quiz_questions").getChildren()) {
-                                String questionTitle = questionSnapshot.child("question_title").getValue(String.class);
-                                List<String> options = new ArrayList<>();
-                                boolean[] isCorrectArray = new boolean[(int) questionSnapshot.child("options").getChildrenCount()];
-
-                                int optionIndex = 0;
-
-                                for (DataSnapshot optionSnapshot : questionSnapshot.child("options").getChildren()) {
-                                    String optionTitle = optionSnapshot.child("option_title").getValue(String.class);
-                                    boolean isCorrect = optionSnapshot.child("correct").getValue(Boolean.class); // to check for correct option
-
-                                    Log.d("QuizDetail", "Option Title: " + optionTitle + ", Is Correct: " + isCorrect);
-
-                                    options.add(optionTitle);
-                                    isCorrectArray[optionIndex++] = isCorrect;
-
-                                }
-                                questions.add(new Question(questionTitle, options, isCorrectArray));
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                adapter = new QuizPagerAdapter(getSupportFragmentManager(), questions);
-                viewPager.setAdapter(adapter);
-                setTitleAndNextButton();
-
-                // Set the initial title
-//                setTitle(currentPosition);
-
-                updateProgressBar();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("QuizDetail", "Database Error: " + databaseError.getMessage());
-            }
-        });
-    }
-
-    private void setTitleAndNextButton() {
-        Button nextButton = findViewById(R.id.nextButton);
-        if (nextButton != null) {
-            nextButton.setOnClickListener(new View.OnClickListener() {
+            ImageView backArrow = findViewById(R.id.quizBackArrow);
+            backArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Check if there is a next question
-                    if (currentPosition < adapter.getCount() - 1) {
-                        currentPosition++;
-                        viewPager.setCurrentItem(currentPosition);
-//                        setTitle(currentPosition);
-
-                        updateProgressBar();
-                    } else {
-                        Toast.makeText(QuizDetail.this, "No more questions", Toast.LENGTH_SHORT).show();
-                    }
+                    finish(); // This will finish the current activity and go back to the previous one
                 }
             });
-        } else {
-            Log.e("QuizDetail", "nextButton is null");
         }
-    }
 
-    private void updateProgressBar() {
-        int totalQuestions = adapter.getCount();
-        int progress = (int) (((float) (currentPosition + 1) / totalQuestions) * 100);
-        progressBar.setProgress(progress);
-        questionCount.setText("Question " + (currentPosition + 1) + "/" + totalQuestions);
-    }
+        private void fetchQuestionsAndSetupUI() {
+            DatabaseReference quizReference = FirebaseDatabase.getInstance().getReference("Quiz");
+            quizReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    List<Question> questions = new ArrayList<>();
+
+                    for (DataSnapshot subjectSnapshot : dataSnapshot.getChildren()) {
+                        for (DataSnapshot quizSnapshot : subjectSnapshot.getChildren()) {
+                            String currentQuizTitle = quizSnapshot.child("quiz_title").getValue(String.class);
+                            if (quizTitle.equals(currentQuizTitle)) {
+                                // Fetch questions for the quiz
+                                for (DataSnapshot questionSnapshot : quizSnapshot.child("quiz_questions").getChildren()) {
+                                    String questionTitle = questionSnapshot.child("question_title").getValue(String.class);
+                                    List<String> options = new ArrayList<>();
+                                    boolean[] isCorrectArray = new boolean[(int) questionSnapshot.child("options").getChildrenCount()];
+
+                                    int optionIndex = 0;
+
+                                    for (DataSnapshot optionSnapshot : questionSnapshot.child("options").getChildren()) {
+                                        String optionTitle = optionSnapshot.child("option_title").getValue(String.class);
+                                        boolean isCorrect = optionSnapshot.child("correct").getValue(Boolean.class); // to check for correct option
+
+                                        Log.d("QuizDetail", "Option Title: " + optionTitle + ", Is Correct: " + isCorrect);
+
+                                        options.add(optionTitle);
+                                        isCorrectArray[optionIndex++] = isCorrect;
+
+                                    }
+                                    questions.add(new Question(questionTitle, options, isCorrectArray));
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    adapter = new QuizPagerAdapter(getSupportFragmentManager(), questions);
+                    viewPager.setAdapter(adapter);
+                    setTitleAndNextButton();
+
+                    // Set the initial title
+    //                setTitle(currentPosition);
+
+                    updateProgressBar();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("QuizDetail", "Database Error: " + databaseError.getMessage());
+                }
+            });
+        }
+
+        private void setTitleAndNextButton() {
+            Button nextButton = findViewById(R.id.nextButton);
+            if (nextButton != null) {
+                nextButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Check if there is a next question
+                        if (currentPosition < adapter.getCount() - 1) {
+                            currentPosition++;
+                            viewPager.setCurrentItem(currentPosition);
+    //                        setTitle(currentPosition);
+
+                            updateProgressBar();
+                        } else {
+                            Toast.makeText(QuizDetail.this, "No more questions", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                });
+            } else {
+                Log.e("QuizDetail", "nextButton is null");
+            }
+        }
+
+        private void updateProgressBar() {
+            int totalQuestions = adapter.getCount();
+            int progress = (int) (((float) (currentPosition + 1) / totalQuestions) * 100);
+            progressBar.setProgress(progress);
+            questionCount.setText("Question " + (currentPosition + 1) + "/" + totalQuestions);
+        }
 
 }
 

@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QuizDetail">
+    tools:context=".QuizDetail"
+    android:background="#FFF7EB">
 
     <!-- Horizontal LinearLayout for Back Arrow and Quiz Title -->
     <LinearLayout
@@ -94,8 +95,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Next"
+        android:textColor="@color/white"
+        android:textSize="14dp"
+        android:textStyle="bold"
         android:onClick="onClick"
-        android:layout_marginLeft="200dp"
+        android:background="@drawable/rounded_next_button"
+        android:layout_marginLeft="260dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
