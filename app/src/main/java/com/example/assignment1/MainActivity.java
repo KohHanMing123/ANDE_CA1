@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -78,6 +80,16 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 return false;
+            }
+        });
+
+        // SOS button click listener
+        Button sosButton = findViewById(R.id.SOSButton);
+        sosButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SOSPage.class);
+                startActivity(intent);
             }
         });
 

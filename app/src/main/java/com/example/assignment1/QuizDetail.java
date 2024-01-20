@@ -52,7 +52,7 @@ import java.util.List;
             backArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish(); // This will finish the current activity and go back to the previous one
+                    finish(); // This will finish the current quiz and go back to quiz page
                 }
             });
         }
