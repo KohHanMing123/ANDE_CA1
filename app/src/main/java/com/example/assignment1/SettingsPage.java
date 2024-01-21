@@ -82,10 +82,16 @@ public class SettingsPage extends AppCompatActivity {
         if (v.getId() == R.id.logout_btn) {
             Toast.makeText(this, "Log out button was pressed", Toast.LENGTH_SHORT).show();
             FirebaseAuth.getInstance().signOut();
+
+            // clear the "remember me" preference to prevent instant login after registering
+            SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("rememberMe", false);
+            editor.apply();
+
             Intent intent = new Intent(this, LoginPage.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-
         }
     }
 

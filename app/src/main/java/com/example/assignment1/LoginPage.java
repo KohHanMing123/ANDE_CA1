@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.content.Intent;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -51,6 +52,16 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("rememberMe", isChecked);
             editor.apply();
+        });
+
+        Button registerButton = findViewById(R.id.registerButton);
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginPage.this, RegisterPage.class);
+                startActivity(intent);
+            }
         });
     }
 
@@ -123,7 +134,11 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        boolean rememberMe = sharedPreferences.getBoolean("rememberMe", false);
+
+        // if user exists and has clicked on remember me, it will log the user in onStart
+        if (currentUser != null && rememberMe) {
             Toast.makeText(LoginPage.this, currentUser.getEmail(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
