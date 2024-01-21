@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,8 +40,8 @@ public class QuizPage extends AppCompatActivity {
     List<QuizItem> quizItems;
 
 
-    private final Set<String> uniqueSubjects = new HashSet<>();
-    private final Map<String, List<QuizItem>> quizzesBySubject = new HashMap<>();
+    private Set<String> uniqueSubjects = new HashSet<>();
+    private Map<String, List<QuizItem>> quizzesBySubject = new HashMap<>();
 
 
     @Override
@@ -49,8 +50,19 @@ public class QuizPage extends AppCompatActivity {
         setContentView(R.layout.activity_quiz_page);
         Log.d("CurrentPage", "iM INSIDE QuizPage.java");
 
-        // Initialize listView
         listView = findViewById(R.id.listViewQuizzes);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                QuizItem clickedQuiz = (QuizItem) parent.getItemAtPosition(position);
+
+                Intent intent = new Intent(QuizPage.this, QuizDetail.class);
+                intent.putExtra("quizTitle", clickedQuiz.getQuizName());
+
+                startActivity(intent);
+            }
+        });
 
 
         quizItems = new ArrayList<>();
@@ -61,10 +73,8 @@ public class QuizPage extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                uniqueSubjects.clear(); // Clear the set before adding new items
-
-                // Map to store quizzes organized by subjects
-                quizzesBySubject.clear(); // Clear the class-level variable
+                uniqueSubjects.clear();
+                quizzesBySubject.clear();
 
                 for (DataSnapshot subjectSnapshot : dataSnapshot.getChildren()) {
                     String subjectName = subjectSnapshot.getKey(); // Get subject name
@@ -77,28 +87,23 @@ public class QuizPage extends AppCompatActivity {
                         String quizTitle = quizSnapshot.child("quiz_title").getValue(String.class);
                         String quizDescription = quizSnapshot.child("quiz_description").getValue(String.class);
 
-                        // Log the data
                         Log.d("FirebaseData", "Quiz Title: " + quizTitle);
                         Log.d("FirebaseData", "Quiz Description: " + quizDescription);
 
                         subjectQuizzes.add(new QuizItem(quizTitle, quizDescription, subjectName));
                     }
 
-                    // Log the quizzes within the subject
                     Log.d("FirebaseData", "Quizzes for Subject " + subjectName + ": " + subjectQuizzes);
 
-                    // Add quizzes for the subject to the map
                     quizzesBySubject.put(subjectName, subjectQuizzes);
                 }
                 Log.d("hello", String.valueOf(quizzesBySubject.keySet()));
 
-                // Update the UI with the retrieved data
                 updateUI(quizzesBySubject, uniqueSubjects);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Failed to read value
                 Log.w("FirebaseData", "Failed to read value.", databaseError.toException());
             }
         });
@@ -149,25 +154,20 @@ public class QuizPage extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                // Change background color and text color when tab is selected
                 tab.view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.orange));
 
-                // Get the TextView from the custom layout of the selected tab
                 TextView tabText = tab.getCustomView().findViewById(R.id.customTabText);
 
                 if (tabText != null) {
                     tabText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
                 }
 
-                // Update quiz list for the selected subject
                 String selectedSubject = tabText.getText().toString();
                 Log.d("selected subject is", selectedSubject);
 
-                // Log the contents of quizzesBySubject for debugging purposes
                 Log.d("FirebaseData", "All subjects in quizzesBySubject: " + quizzesBySubject.keySet());
 
                 if (quizzesBySubject.containsKey(selectedSubject)) {
-                    // Create a new instance of QuizAdapter every time the tab is selected
                     QuizAdapter quizAdapter = new QuizAdapter(getApplicationContext(), quizzesBySubject.get(selectedSubject));
                     listView.setAdapter(quizAdapter);
                 } else {
@@ -179,10 +179,8 @@ public class QuizPage extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                // Change background color and text color of the unselected tab to the default color
                 tab.view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.background));
 
-                // Get the TextView from the custom layout of the unselected tab
                 TextView tabText = tab.getCustomView().findViewById(R.id.customTabText);
 
                 if (tabText != null) {
@@ -192,7 +190,7 @@ public class QuizPage extends AppCompatActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                // You may choose to handle reselection differently if needed
+                // could be used
             }
         });
 
@@ -215,39 +213,30 @@ public class QuizPage extends AppCompatActivity {
         }
     }
     private void createTabs(Set<String> uniqueSubjects) {
-        // Clear existing tabs
         tabLayout.removeAllTabs();
 
         for (String subject : uniqueSubjects) {
-            // Create a new tab
             TabLayout.Tab tab = tabLayout.newTab();
 
-            // Inflate the custom_tab_item.xml layout
             View customTabView = LayoutInflater.from(this).inflate(R.layout.custom_tab_item, null);
 
-            // Find the TextView in the custom layout and set its text
             TextView textView = customTabView.findViewById(R.id.customTabText);
             Log.d("custom tab subject", subject);
             textView.setText(subject);
 
-            // Set the custom view for the tab
             tab.setCustomView(customTabView);
 
-            // Add the tab to the TabLayout
             tabLayout.addTab(tab);
         }
     }
 
-    // Update the UI with the retrieved data
     private void updateUI(Map<String, List<QuizItem>> quizzesBySubject, Set<String> uniqueSubjects) {
-        // Update the tab layout
         updateTabLayout(tabLayout, uniqueSubjects);
         createTabs(uniqueSubjects);
 
         // Choose a default subject or implement logic to select a subject
         String selectedSubject = uniqueSubjects.iterator().next();
 
-        // Update the quiz list view for the default subject
         setupQuizListView(quizzesBySubject.get(selectedSubject));
     }
 

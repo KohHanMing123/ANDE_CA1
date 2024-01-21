@@ -23,9 +23,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class LoginPage extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
     public static final String user_id = "";
     private SharedPreferences prefs;
 
@@ -38,6 +44,14 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
         // Initialize and assign variable
         setContentView(R.layout.activity_login_page);
         mAuth = FirebaseAuth.getInstance();
+        CheckBox rmb_btn = findViewById(R.id.rmb_btn);
+        rmb_btn.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Save the "remember me" setting in SharedPreferences
+            SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("rememberMe", isChecked);
+            editor.apply();
+        });
     }
 
     @Override
@@ -48,7 +62,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
             String email = eEmail.getText().toString();
             EditText ePwd = (EditText) findViewById(R.id.password_input);
             String password = ePwd.getText().toString();
-            try{
+            try {
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -57,13 +71,35 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d(TAG, "signInWithEmail:success");
                                     Toast.makeText(LoginPage.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
-                                    // Load the preferences
-                                    prefs = getSharedPreferences(MyPREFERNCES, MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = prefs.edit();
-                                    editor.putString(user_id, mAuth.getUid());
-                                    editor.commit();
-                                    Intent intent = new Intent(LoginPage.this, MainActivity.class);
-                                    startActivity(intent);
+
+                                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                                    String uId = mAuth.getCurrentUser().getUid();
+                                    mDatabase.child("Users").child(uId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                            if (!task.isSuccessful()) {
+                                                Log.e("firebase", "Error getting data", task.getException());
+                                                Toast.makeText(LoginPage.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                                                Intent intent = getIntent();
+                                                finish();
+                                                startActivity(intent);
+                                            } else {
+                                                HashMap<String, String> userData = (HashMap<String, String>) task.getResult().getValue();
+
+                                                String erName = userData.get("er_name");
+                                                String phoneNo = userData.get("phone_no");
+                                                String erRelationship = userData.get("er_relationship");
+                                                String userName = userData.get("user_name");
+                                                String className = userData.get("class_name");
+
+                                                User user = new User(uId,userName,className, phoneNo, erName, erRelationship);
+
+                                                Toast.makeText(LoginPage.this, "", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(LoginPage.this, MainActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    });
 
                                 } else {
                                     // If sign in fails, display a message to the user.
@@ -74,43 +110,25 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                             }
                         });
 
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 Toast.makeText(this, "Please enter all fields!", Toast.LENGTH_SHORT).show();
-            } catch (Exception e){
+            } catch (Exception e) {
                 Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
             }
 
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             Toast.makeText(LoginPage.this, currentUser.getEmail(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } else {
             Toast.makeText(LoginPage.this, "No Authentication", Toast.LENGTH_SHORT).show();
-        }
-    }
-    // If remember me was not pressed
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        //initiate a check box
-        CheckBox rmb_btn = (CheckBox) findViewById(R.id.rmb_btn);
-        Boolean checkBoxState = rmb_btn.isChecked();
-
-        if (!checkBoxState){
-            prefs = getSharedPreferences(MyPREFERNCES, MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-
-            // Store into the SharedPreferences
-            editor.putString(user_id,"");
-            editor.commit();
-            FirebaseAuth.getInstance().signOut();
-
         }
     }
 

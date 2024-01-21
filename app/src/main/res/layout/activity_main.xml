@@ -55,7 +55,7 @@
                     app:srcCompat="@drawable/bell" />
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/SOSButton"
                     android:layout_width="90px"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10px"

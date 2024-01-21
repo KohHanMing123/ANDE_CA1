@@ -31,4 +31,11 @@
     <string name="desc_biometrics_authorization">Enter your login ID and password to confirm activation of Biometric Login.</string>
     <string name="cancel">Cancel</string>
     <string name="btn_authorize">Authorize</string>
+
+    <string name="user_info">Information</string>
+    <string name="log_out"> Logout </string>
+    <string name="save_btn">Save</string>
+    <string name="personal">Personal</string>
+    <string name="er_contact">Emergency Contact</string>
+    <string name="pref">Preference</string>
 </resources>
