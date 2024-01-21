@@ -35,6 +35,20 @@ public class SettingsPage extends AppCompatActivity {
         setContentView(R.layout.activity_settings_page);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Switch fontSwitcher;
+        fontSwitcher = findViewById(R.id.fontSwitcher);
+        fontSwitcher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fontSwitcher.isChecked()){
+                    changeTextSizeForAllTextViews(25);
+                } else {
+                    changeTextSizeForAllTextViews(16);
+                }
+
+            }
+        });
+
         switcher = findViewById(R.id.switchDarkMode);
 
         sharedPreferences= getSharedPreferences("MODE", Context.MODE_PRIVATE);
@@ -92,6 +106,41 @@ public class SettingsPage extends AppCompatActivity {
             Intent intent = new Intent(this, LoginPage.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+        }
+    }
+
+
+    private void changeTextSizeForAllTextViews(int size) {
+        // Finding all TextViews by their resource IDs
+        int[] textViewIds = {
+                R.id.personal_name,
+                R.id.personal_email,
+                R.id.personal_class,
+                R.id.personal_title,
+                R.id.switchDarkMode,
+                R.id.fontSwitcher,
+                R.id.save_settings,
+                R.id.switchDarkMode,
+                R.id.fontSwitcher,
+                R.id.pref_title,
+                R.id.dark_mode,
+                R.id.font,
+                R.id.er_contact,
+                R.id.contact,
+                R.id.name,
+                R.id.relationship
+        };
+
+        // Iterate through all TextViews and set text size to 20dp
+        for (int textViewId : textViewIds) {
+            // Find the TextView by its resource ID
+            TextView textView = findViewById(textViewId);
+
+            // Check if the TextView is not null before updating
+            if (textView != null) {
+                // Set the text size to 20dp
+                textView.setTextSize(size);
+            }
         }
     }
 
