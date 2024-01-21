@@ -4,12 +4,13 @@ import static android.hardware.biometrics.BiometricManager.Authenticators.BIOMET
 import static android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -30,13 +31,13 @@ import android.widget.ViewSwitcher;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
+
     ListView listView;
     TextView textView, announcementTextView;
     ImageSwitcher announcementImageSwitcher;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private Executor executor;
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
+
     String[] listItem;
 
     @Override
@@ -55,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String user = User.user_id;
-        initiateBiometricAuthentication();
-        Toast.makeText(this, "user in onCreate mainActivity" + user, Toast.LENGTH_SHORT).show();
+//        String user = User.user_id;
+//        initiateBiometricAuthentication();
+//        Toast.makeText(this, "user in onCreate mainActivity" + user, Toast.LENGTH_SHORT).show();
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -259,6 +261,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    @Override
+//    public void onStart(){
+//        super.onStart();
+//        sharedPreferences= getSharedPreferences("MODE", Context.MODE_PRIVATE);
+//        night_mode = sharedPreferences.getBoolean("night", false);
+//        if (night_mode){
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//        }
+//    }
+
     @Override
     public void onStop(){
         super.onStop();
@@ -269,4 +281,5 @@ public class MainActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
         }
     }
+
 }

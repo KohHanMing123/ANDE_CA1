@@ -42,4 +42,5 @@ dependencies {
     implementation "androidx.biometric:biometric:1.0.1"
     implementation "com.google.firebase:firebase-auth"
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
+    implementation "com.dolatkia:animated-theme-manager:1.1.4"
 }
