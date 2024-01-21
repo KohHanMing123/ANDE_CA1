@@ -1,10 +1,7 @@
 package com.example.assignment1;
 
-import static android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG;
 import static android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_WEAK;
 import static android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
-import static com.example.assignment1.LoginPage.MyPREFERNCES;
-import static com.example.assignment1.LoginPage.user_id;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -52,17 +49,18 @@ public class MainActivity extends AppCompatActivity {
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
     String[] listItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseAuth user = FirebaseAuth.getInstance();
-        Toast.makeText(this, "Main Activity", Toast.LENGTH_SHORT).show();
+        String user = User.user_id;
+        initiateBiometricAuthentication();
+        Toast.makeText(this, "user in onCreate mainActivity" + user, Toast.LENGTH_SHORT).show();
 
 
-
-        BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         // Set the icon selected
         bottomNavigationView.setSelectedItemId(R.id.home);
@@ -81,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), HomeworkPage.class));
                     overridePendingTransition(0, 0);
                     return true;
-                }  else if (itemId == R.id.time) {
+                } else if (itemId == R.id.time) {
                     startActivity(new Intent(getApplicationContext(), QuizPage.class));
                     overridePendingTransition(0, 0);
                     return true;
@@ -110,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
 //        ANIMATION PROPERTIES
         ImageSwitcher announcementsImages = (ImageSwitcher) findViewById(R.id.imageSwitcherAnnouncement);
         Animation slide = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -120,7 +117,11 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.listViewHW);
         announcementsImages.startAnimation(slide);
         listView.startAnimation(slide);
+
+        //GETTING USER'S NAME===================
+        String name = User.user_name;
         TextView welcomeText = (TextView) findViewById(R.id.textWelcome);
+        welcomeText.setText("Welcome, " + name);
         welcomeText.startAnimation(flies);
         // END OF ANIMATION
 
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<HomeworkItem> generateHWItems() {
-        List<HomeworkItem> homeworkItems = new ArrayList<HomeworkItem>(){
+        List<HomeworkItem> homeworkItems = new ArrayList<HomeworkItem>() {
             {
                 add(new HomeworkItem("Daily Problem Sums", "Mathematics"));
                 add(new HomeworkItem("Workbook Page 31-33", "Chinese"));
@@ -182,13 +183,6 @@ public class MainActivity extends AppCompatActivity {
             handler.postDelayed(this, interval);
         }
     };
-
-    @Override
-    public void onRestart() {
-        super.onRestart();
-        initiateBiometricAuthentication();
-        Toast.makeText(this, "onRestart", Toast.LENGTH_SHORT).show();
-    }
 
     private void initiateBiometricAuthentication() {
 
@@ -252,4 +246,27 @@ public class MainActivity extends AppCompatActivity {
         biometricPrompt.authenticate(promptInfo);
     }
 
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        Toast.makeText(this, "onRestart", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClickSettings(View v){
+        if (v.getId() ==R.id.settings_btn){
+            Intent intent = new Intent(this, SettingsPage.class);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        boolean checkBoxState = sharedPreferences.getBoolean("rememberMe", false);
+        if(!checkBoxState){
+            FirebaseAuth.getInstance().signOut();
+        }
+    }
 }

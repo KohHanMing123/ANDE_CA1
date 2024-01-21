@@ -35,13 +35,13 @@
 
                 <TextView
                     android:id="@+id/textWelcome"
-                    android:layout_width="100px"
+                    android:layout_width="202dp"
                     android:layout_height="match_parent"
                     android:layout_weight="15"
                     android:fontFamily="@font/lexend_semibold"
-                    android:text="Welcome John!"
+                    android:text="Welcome !"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="110px"
+                    android:textSize="80px"
                     android:textStyle="bold" />
 
                 <ImageButton
@@ -59,15 +59,25 @@
                     android:layout_width="90px"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10px"
-                    android:onClick="onClick"
                     android:layout_weight="1"
                     android:background="@drawable/background_orange_rounded"
                     android:clickable="true"
                     android:fontFamily="@font/inter_semibold"
+                    android:onClick="onClick"
                     android:text="SOS"
                     android:textColor="#ffffff"
                     android:textSize="50px"
                     android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/settings_btn"
+                    android:layout_width="90px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_orange_rounded"
+                    android:onClick="onClickSettings"
+                    android:paddingHorizontal="23px"
+                    app:srcCompat="@drawable/ic_baseline_settings_24" />
 
             </LinearLayout>
 
@@ -118,6 +128,7 @@
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
+
             <TextView
                 android:id="@+id/textLatestAnnouncements2"
                 android:layout_width="match_parent"
