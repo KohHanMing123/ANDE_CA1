@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.content.Intent;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -51,6 +52,16 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("rememberMe", isChecked);
             editor.apply();
+        });
+
+        Button registerButton = findViewById(R.id.registerButton);
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginPage.this, RegisterPage.class);
+                startActivity(intent);
+            }
         });
     }
 
