@@ -5,19 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RegisterPage"
-    android:background="@drawable/registerbg">
-    <!-- Back Arrow Icon -->
-    <ImageView
-        android:id="@+id/registerBackArrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:contentDescription="Back Arrow"
-        android:src="@drawable/ic_baseline_arrow_back_ios_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+    android:background="#FFF7EB"
+    >
 
 
     <LinearLayout
@@ -29,7 +18,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/registerbg"
+        >
 
         <TextView
             android:id="@+id/loginText"
@@ -68,7 +59,7 @@
                     app:cardElevation="4dp">
 
                     <EditText
-                        android:id="@+id/username"
+                        android:id="@+id/username_register"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:background="@android:color/transparent"
@@ -91,7 +82,7 @@
                     app:cardElevation="4dp">
 
                     <EditText
-                        android:id="@+id/email"
+                        android:id="@+id/email_register"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:background="@android:color/transparent"
@@ -113,7 +104,7 @@
                     app:cardElevation="4dp">
 
                     <EditText
-                        android:id="@+id/password"
+                        android:id="@+id/password_register"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:background="@android:color/transparent"
@@ -135,7 +126,7 @@
                     app:cardElevation="4dp">
 
                     <EditText
-                        android:id="@+id/confirmPassword"
+                        android:id="@+id/confirmPassword_register"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:background="@android:color/transparent"
@@ -156,24 +147,27 @@
                     app:cardCornerRadius="10dp"
                     app:cardElevation="4dp">
 
-                    <EditText
-                        android:id="@+id/class_dropdown"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="@android:color/transparent"
-                        android:drawableRight="@drawable/lock"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="@color/black"
-                        android:hint="Class"
-                        android:padding="8dp"
-                        android:textColor="@color/black" />
+                        android:layout_height="match_parent">
 
-<!--                    <Spinner-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="50dp"-->
-<!--                        android:background="@color/transparent"-->
-<!--                        android:padding="8dp"-->
-<!--                        />-->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:hint="Class"
+                            android:textSize="18dp"
+                            android:textColor="@color/black"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginLeft="8dp"/>
+
+                        <Spinner
+                            android:id="@+id/class_dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:padding="8dp"
+                            android:spinnerMode="dropdown"/>
+
+                    </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
@@ -193,10 +187,11 @@
 
             </LinearLayout>
 
+
         </androidx.cardview.widget.CardView>
 
         <Button
-            android:id="@+id/loginButton"
+            android:id="@+id/registerCreateButton"
             android:layout_width="322dp"
             android:layout_height="55dp"
             android:background="@drawable/rounded_next_button"
@@ -210,5 +205,20 @@
             app:cornerRadius="10dp" />
 
     </LinearLayout>
+
+    <!-- Back Arrow Icon -->
+    <ImageView
+        android:id="@+id/registerBackArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="Back Arrow"
+        android:src="@drawable/ic_baseline_arrow_back_ios_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

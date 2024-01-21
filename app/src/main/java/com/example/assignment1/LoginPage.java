@@ -134,7 +134,11 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        boolean rememberMe = sharedPreferences.getBoolean("rememberMe", false);
+
+        // if user exists and has clicked on remember me, it will log the user in onStart
+        if (currentUser != null && rememberMe) {
             Toast.makeText(LoginPage.this, currentUser.getEmail(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
