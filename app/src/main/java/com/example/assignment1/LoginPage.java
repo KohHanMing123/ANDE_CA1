@@ -52,14 +52,13 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
 
         // Checkbox listener
         CheckBox rmb_btn = findViewById(R.id.rmb_btn);
+        rmb_btn.setChecked(prefs.getBoolean("rmb", false));
         rmb_btn.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Toast.makeText(LoginPage.this, "IS THIS CHECKED? " + isChecked, Toast.LENGTH_SHORT).show();
             // Save the "remember me" setting in SharedPreferences
+
             editor.putBoolean("rmb", isChecked);  // Change the key to "rmb"
             editor.apply();
-
-            String tick = "MEOW" + prefs.getBoolean("rmb", false);
-            Toast.makeText(this, tick, Toast.LENGTH_SHORT).show();
         });
 
         String email = prefs.getString("email", "");
@@ -121,16 +120,18 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
 
                                                 User user = new User(uId,userName,className, phoneNo, erName, erRelationship);
 
-                                                boolean rememberMe = prefs.getBoolean("rmb", false);
-                                                Toast.makeText(LoginPage.this, "PREF:"+ rememberMe, Toast.LENGTH_SHORT).show();
+                                                CheckBox rmb_btn = findViewById(R.id.rmb_btn);
+                                                boolean rememberMe = rmb_btn.isChecked();
 
                                                 if(rememberMe){
+                                                    Toast.makeText(LoginPage.this, "onClcik, rmb me", Toast.LENGTH_SHORT).show();
                                                     EditText emailInput = (EditText) findViewById(R.id.email_input);
                                                     String email = emailInput.getText().toString();
                                                     Toast.makeText(LoginPage.this, email, Toast.LENGTH_SHORT).show();
                                                     editor.putString("email", email);
                                                     editor.apply();
                                                 } else {
+                                                    Toast.makeText(LoginPage.this, "onClcik, non", Toast.LENGTH_SHORT).show();
                                                     editor.putString("email", "");
                                                     editor.apply();
                                                 }
