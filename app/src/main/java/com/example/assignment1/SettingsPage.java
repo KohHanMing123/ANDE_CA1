@@ -4,21 +4,32 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.app.Activity;
+
+import androidx.annotation.Nullable;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
+
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
@@ -26,6 +37,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingsPage extends AppCompatActivity {
     Switch switcher;
@@ -34,12 +55,48 @@ public class SettingsPage extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+
+    // Profile Picture
+    private Uri imageUri;
+    private String myUri = "";
+    private StorageTask uploadTask;
+    private StorageReference storageProfilePicsRef;
+
+    private CircleImageView profileImageView;
+    private Button saveButton;
+    private TextView profileChangeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_page);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //PROFILE INIT
+        profileImageView = findViewById(R.id.profile_image);
+        profileChangeBtn = findViewById(R.id.change_profile_btn);
+
+        // FIREBASE INIT ====================================================
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        storageProfilePicsRef = FirebaseStorage.getInstance().getReference();
+
+        profileChangeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(openGalleryIntent, 1000);
+            }
+        });
+
+        StorageReference fileRef = storageProfilePicsRef.child("Users/"+FirebaseAuth.getInstance().getUid()+"profile.jpg");
+        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).into(profileImageView);
+            }
+        });
 
         selectedRs = User.er_relationship;
 
@@ -135,7 +192,7 @@ public class SettingsPage extends AppCompatActivity {
         String newContact = contact.getText().toString();
         String newName = er_name.getText().toString();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         mDatabase.child("Users").child(FirebaseAuth.getInstance().getUid()).child("er_name").setValue(newName);
         mDatabase.child("Users").child(FirebaseAuth.getInstance().getUid()).child("phone_no").setValue(newContact);
         mDatabase.child("Users").child(FirebaseAuth.getInstance().getUid()).child("er_relationship").setValue(selectedRs);
@@ -181,7 +238,7 @@ public class SettingsPage extends AppCompatActivity {
         if (desiredItemPosition != -1) {
             spinnerRelationship.setSelection(desiredItemPosition);
         } else {
-            spinnerRelationship.setSelection(relationshipOptions.length - 1);
+            spinnerRelationship.setSelection(relationshipOptions.length);
         }
     }
 
@@ -200,9 +257,43 @@ public class SettingsPage extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1000) {
+            if (resultCode == Activity.RESULT_OK) {
+                Uri imageUri = data.getData();
+                profileImageView.setImageURI(imageUri);
+                uploadImageToFirebase(imageUri);
+            }
+        }
+    }
+
+    private void uploadImageToFirebase(Uri imageUri) {
+        final StorageReference fileRef = storageProfilePicsRef.child("Users/"+FirebaseAuth.getInstance().getUid()+"profile.jpg");
+        fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get().load(uri).into(profileImageView);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SettingsPage.this, "Failed upload", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
 }
 
-// Add other methods as needed
 
 
 

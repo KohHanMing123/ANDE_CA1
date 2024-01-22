@@ -5,7 +5,6 @@ import static android.hardware.biometrics.BiometricManager.Authenticators.DEVICE
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
@@ -39,6 +38,8 @@ import java.util.concurrent.Executor;
 public class MainActivity extends AppCompatActivity {
 
     ListView listView;
+    private SharedPreferences prefs;
+    SharedPreferences.Editor editor;
     TextView textView, announcementTextView;
     ImageSwitcher announcementImageSwitcher;
     private final int[] announcementImages = {R.drawable.books, R.drawable.assembly_announcement, R.drawable.recess_party};
@@ -53,7 +54,29 @@ public class MainActivity extends AppCompatActivity {
     String[] listItem;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        boolean bioAuth = prefs.getBoolean("bioAuth", false);
+
+        if(!bioAuth){
+            initiateBiometricAuthentication();
+            editor.putBoolean("bioAuth", true);
+            editor.apply();
+        }
+    }
+
+    @Override
+    public void onRestart(){
+        editor.putBoolean("bioAuth", false);
+        editor.apply();
+        super.onRestart();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        prefs=getSharedPreferences(LoginPage.Login, MODE_PRIVATE);
+        editor= prefs.edit();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -88,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 }
-
                 return false;
             }
         });
@@ -146,9 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupHomeworkListView() {
         listView = findViewById(R.id.listViewHW);
-
         List<HomeworkItem> homeworkItems = generateHWItems(); // method to create your list
-
         HomeworkListAdapter hwAdapter = new HomeworkListAdapter(this, homeworkItems);
         listView.setAdapter(hwAdapter);
 
@@ -205,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 final Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
                 enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
                         BIOMETRIC_WEAK | DEVICE_CREDENTIAL);
-                Toast.makeText(this, "Enroll your biomentrics", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Enroll your biometrics for enhanced security", Toast.LENGTH_SHORT).show();
                 break;
         }
 

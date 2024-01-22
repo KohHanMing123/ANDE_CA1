@@ -120,18 +120,18 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
 
                                                 User user = new User(uId,userName,className, phoneNo, erName, erRelationship);
 
+                                                editor.putBoolean("bioAuth", true);
+                                                editor.apply();
+
                                                 CheckBox rmb_btn = findViewById(R.id.rmb_btn);
                                                 boolean rememberMe = rmb_btn.isChecked();
 
                                                 if(rememberMe){
-                                                    Toast.makeText(LoginPage.this, "onClcik, rmb me", Toast.LENGTH_SHORT).show();
                                                     EditText emailInput = (EditText) findViewById(R.id.email_input);
                                                     String email = emailInput.getText().toString();
-                                                    Toast.makeText(LoginPage.this, email, Toast.LENGTH_SHORT).show();
                                                     editor.putString("email", email);
                                                     editor.apply();
                                                 } else {
-                                                    Toast.makeText(LoginPage.this, "onClcik, non", Toast.LENGTH_SHORT).show();
                                                     editor.putString("email", "");
                                                     editor.apply();
                                                 }
