@@ -26,12 +26,16 @@
             android:parentActivityName=".LoginPage"
             android:theme="@style/mainActionBar"/>
         <activity
+            android:name=".ConsentFormListPage"
+            android:exported="false" />
+        <activity
             android:name=".RegisterPage"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".SOSPage"
             android:exported="false">
@@ -76,6 +80,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".EditPage"
             android:exported="false">

@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.form) {
-                    startActivity(new Intent(getApplicationContext(), SettingsPage.class));
+                    startActivity(new Intent(getApplicationContext(), ConsentFormListPage.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }
