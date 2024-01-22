@@ -38,4 +38,13 @@
     <string name="personal">Personal</string>
     <string name="er_contact">Emergency Contact</string>
     <string name="pref">Preference</string>
+
+    <string-array name="relationship_options">
+        <item>Mother</item>
+        <item>Father</item>
+        <item>Guardian</item>
+        <item>Sibling</item>
+        <item>Relative</item>
+        <item>Others</item>
+    </string-array>
 </resources>

@@ -56,12 +56,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        String user = User.user_id;
-//        initiateBiometricAuthentication();
-//        Toast.makeText(this, "user in onCreate mainActivity" + user, Toast.LENGTH_SHORT).show();
-
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         // Set the icon selected
@@ -186,6 +180,13 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public void onClickSettings(View v){
+        if (v.getId() ==R.id.settings_btn){
+            Intent intent = new Intent(this, SettingsPage.class);
+            startActivity(intent);
+        }
+    }
+
     private void initiateBiometricAuthentication() {
 
         BiometricManager biometricManager = BiometricManager.from(this);
@@ -207,8 +208,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Enroll your biomentrics", Toast.LENGTH_SHORT).show();
                 break;
         }
-
-        Toast.makeText(this, "initateBio", Toast.LENGTH_SHORT).show();
 
         executor = ContextCompat.getMainExecutor(this);
         biometricPrompt = new BiometricPrompt(MainActivity.this,
@@ -246,40 +245,6 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         biometricPrompt.authenticate(promptInfo);
-    }
-
-    @Override
-    public void onRestart() {
-        super.onRestart();
-        Toast.makeText(this, "onRestart", Toast.LENGTH_SHORT).show();
-    }
-
-    public void onClickSettings(View v){
-        if (v.getId() ==R.id.settings_btn){
-            Intent intent = new Intent(this, SettingsPage.class);
-            startActivity(intent);
-        }
-    }
-
-//    @Override
-//    public void onStart(){
-//        super.onStart();
-//        sharedPreferences= getSharedPreferences("MODE", Context.MODE_PRIVATE);
-//        night_mode = sharedPreferences.getBoolean("night", false);
-//        if (night_mode){
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-//        }
-//    }
-
-    @Override
-    public void onStop(){
-        super.onStop();
-        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        boolean checkBoxState = sharedPreferences.getBoolean("rememberMe", false);
-        if(!checkBoxState){
-            FirebaseAuth.getInstance().signOut();
-        }
     }
 
 }
