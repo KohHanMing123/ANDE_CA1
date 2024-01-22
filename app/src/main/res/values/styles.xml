@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar" />
+
     <style name="mainActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#FA7C50</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
 </resources>

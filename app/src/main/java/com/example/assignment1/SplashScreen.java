@@ -2,8 +2,12 @@ package com.example.assignment1;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -26,13 +30,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class SplashScreen extends AppCompatActivity {
+    boolean night_mode;
+    SharedPreferences sharedPreferences;
+
     private DatabaseReference mDatabase;
     private final int SPLASH_DISPLAY = 2000;
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        sharedPreferences= getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        night_mode = sharedPreferences.getBoolean("night", false);
+        if (night_mode){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setDatabaseUrl("https://andeca2-b5af6-default-rtdb.asia-southeast1.firebasedatabase.app/")
                 .setApplicationId("1:590903525065:android:1b622cff39e82e8a631718")
@@ -43,6 +54,7 @@ public class SplashScreen extends AppCompatActivity {
         FirebaseApp.initializeApp(this, options);
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         // Initialize and assign variable
         ImageView image = (ImageView)findViewById(R.id.SplashScreenImage);
         ImageView imagePen = (ImageView)findViewById(R.id.pen);
@@ -102,5 +114,6 @@ public class SplashScreen extends AppCompatActivity {
                 SplashScreen.this.finish();
             }
         }, SPLASH_DISPLAY);
+
     }
 }

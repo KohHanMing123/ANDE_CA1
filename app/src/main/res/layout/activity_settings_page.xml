@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF7EB"
     tools:context=".SettingsPage">
 
     <LinearLayout
+        style="@style/SCREEN"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -33,6 +33,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/personal_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
@@ -41,31 +42,34 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/personal_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
-                            android:text="Email: Christopher Fernandez Gan"
+                            android:text="Name: "
                             android:textSize="15dp" />
 
                         <TextView
+                            android:id="@+id/personal_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
-                            android:text="Email: bobby@gmail.com"
+                            android:text="Email: "
                             android:textSize="15dp" />
 
                         <TextView
+                            android:id="@+id/personal_class"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
-                            android:text="Class: 403"
+                            android:text="Class: "
                             android:textSize="15dp" />
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
-<!--    ========================      APPEARANCE=========================================================-->
+                <!--    ========================      APPEARANCE=========================================================-->
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -87,6 +91,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
+                                android:id="@+id/pref_title"
                                 android:text="@string/pref"
                                 android:textSize="18dp"
                                 android:textStyle="bold" />
@@ -103,11 +108,12 @@
                                     android:layout_height="wrap_content"
                                     android:layout_margin="10dp"
                                     android:layout_weight="1"
+                                    android:id="@+id/dark_mode"
                                     android:text="Dark Mode"
                                     android:textSize="14dp" />
 
                                 <Switch
-                                    android:id="@+id/switch1"
+                                    android:id="@+id/switchDarkMode"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="10dp"
@@ -121,14 +127,16 @@
                                 android:layout_gravity="center_horizontal">
 
                                 <TextView
+                                    android:id="@+id/font"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="10dp"
                                     android:layout_weight="1"
-                                    android:text="Font Size"
+                                    android:text="Larger Settings Font Size"
                                     android:textSize="14dp" />
 
-                                <Spinner
+                                <Switch
+                                    android:id="@+id/fontSwitcher"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="10dp"
@@ -143,7 +151,7 @@
 
                 </androidx.cardview.widget.CardView>
 
-<!--                ==============================================EMERGENCY CONTACT==============================================-->
+                <!--                ==============================================EMERGENCY CONTACT==============================================-->
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -157,12 +165,12 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/er_contact"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
                             android:text="@string/er_contact"
                             android:textSize="18dp"
-
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -171,6 +179,7 @@
                             android:layout_gravity="center_horizontal">
 
                             <TextView
+                                android:id="@+id/contact"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
@@ -183,7 +192,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
                                 android:layout_weight="1"
-                                android:text="+65 8989 8989"/>
+                                android:text="+65 8989 8989" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -192,6 +201,7 @@
                             android:layout_gravity="center_horizontal">
 
                             <TextView
+                                android:id="@+id/name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
@@ -204,7 +214,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="10dp"
                                 android:layout_weight="1"
-                                android:text="Johnson Teal Gan"/>
+                                android:text="Johnson Teal Gan" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -218,7 +228,8 @@
                                 android:layout_margin="10dp"
                                 android:layout_weight="1"
                                 android:text="Relationship"
-                                android:textSize="14dp" />
+                                android:textSize="14dp"
+                                android:id="@+id/relationship"/>
 
                             <Spinner
                                 android:layout_width="wrap_content"
@@ -226,42 +237,46 @@
                                 android:layout_margin="10dp"
                                 android:layout_weight="1" />
 
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+
+
+                            <Button
+                                android:id="@+id/save_settings"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/TEXT"
+                                android:background="@color/transparent"
+                                android:shadowRadius="9.0"
+                                android:text="@string/save_btn"
+                                android:layout_gravity="end"
+                                android:layout_weight="0"/>
+
                         </LinearLayout>
 
                     </LinearLayout>
 
 
+
                 </androidx.cardview.widget.CardView>
 
-<!--                =========================================LOGOUT AND SAVING=========================================-->
+                <!--                =========================================LOGOUT AND SAVING=========================================-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/logout_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:color="@color/logoutColor"
-                        android:onClick="onClickLogout"
-                        android:text="@string/log_out" />
-
-                    <Button
-                        android:id="@+id/save_settings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="100dp"
-                        android:layout_weight="1"
-                        android:background="@color/orange"
-                        android:color="@color/white"
-                        android:text="@string/save_btn" />
-
-                </LinearLayout>
+                <Button
+                    android:id="@+id/logout_btn"
+                    style="@style/TEXT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:onClick="onClickLogout"
+                    android:text="@string/log_out" />
 
             </LinearLayout>
         </ScrollView>
