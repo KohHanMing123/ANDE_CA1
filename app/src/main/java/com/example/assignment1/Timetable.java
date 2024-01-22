@@ -6,26 +6,49 @@ import androidx.cardview.widget.CardView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.icu.text.SymbolTable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+
+import java.lang.reflect.Array;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Timetable extends AppCompatActivity implements View.OnClickListener {
     private final long selectedDate = -1;
+
+    TimetableAPI timetableAPI;
+    private DatabaseReference databaseReference;
     private GestureDetector gestureDetector;
-    @SuppressLint("ClickableViewAccessibility")
+    private ListView timetableListView;
+
+    private List<TimetableItem> timetableListByDay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -60,7 +83,7 @@ public class Timetable extends AppCompatActivity implements View.OnClickListener
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.form) {
-                    startActivity(new Intent(getApplicationContext(), SettingsPage.class));
+                    startActivity(new Intent(getApplicationContext(), ConsentFormListPage.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }
@@ -82,17 +105,18 @@ public class Timetable extends AppCompatActivity implements View.OnClickListener
         String formattedDateForBtmDisplay = bottomDisplay.format(date);
         headerMonthYear.setText(formattedDateForHeader);
         displayDate.setText(formattedDateForBtmDisplay);
+
+        //Intializing Timetable Items
+        setUpTimetableListView(date);
         // When date changes
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 Date selectedDate = new Date(year - 1900, month, dayOfMonth);
-
                 displayDate.setText(bottomDisplay.format(selectedDate));
+                headerMonthYear.setText(headerDisplay.format(selectedDate));
+                setUpTimetableListView(selectedDate);
 
-                String monthString = new DateFormatSymbols().getMonths()[month];
-
-               headerMonthYear.setText(headerDisplay.format(selectedDate));
             }
         });
 
@@ -112,5 +136,82 @@ public class Timetable extends AppCompatActivity implements View.OnClickListener
             examBtn.setBackground(getDrawable(R.drawable.orange_line));
             timetableBtn.setBackground(null);
         }
+    }
+
+    private void setUpTimetableListView(Date date) {
+        timetableListByDay =  new ArrayList<>();
+        SimpleDateFormat timetableComparison = new SimpleDateFormat("EEEE");
+        String formattedTimetableComparisonDay = timetableComparison.format(date);
+        String classname = "1B";
+        databaseReference = FirebaseDatabase.getInstance().getReference("Timetable").child(classname);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    for(DataSnapshot dayEventsData : snapshot.child(formattedTimetableComparisonDay).getChildren()){
+                        String start_time = null, end_time = null, venue = null;
+                        for(DataSnapshot eventData : dayEventsData.getChildren()){
+                            switch (eventData.getKey().toString()){
+                                case "Start_time":
+                                    start_time = eventData.getValue().toString();
+                                    break;
+                                case "End_time":
+                                    end_time = eventData.getValue().toString();
+                                    break;
+                                case "Venue":
+                                    venue = eventData.getValue().toString();
+                            }
+                        }
+                        if(start_time != null && end_time != null && venue != null){
+                            timetableListByDay.add(new TimetableItem(dayEventsData.getKey().toString(), venue, start_time, end_time, "Monday"));
+
+                        }
+                    }
+                renderTimetableListView(timetableListByDay);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("a",error.toString());
+            }
+        });
+    }
+
+    private List<TimetableItem> orderTimetable(List<TimetableItem> timetableItems){
+        List<String> refTiming = new ArrayList<>();
+        refTiming.add("0730");
+        refTiming.add("0800");
+        refTiming.add("0900");
+        refTiming.add("1000");
+        refTiming.add("1100");
+        refTiming.add("1130");
+        refTiming.add("1230");
+        List<TimetableItem> tempTimetableItems = new ArrayList<>();
+
+        for(int i = 0; i < timetableItems.size(); i++){
+            for(TimetableItem timetableItem: timetableItems){
+                if(timetableItem.getStart_time().equals(refTiming.get(i))){
+                    tempTimetableItems.add(timetableItem);
+                }
+            }
+        }
+
+        return tempTimetableItems;
+    }
+
+    private void renderTimetableListView(List<TimetableItem> unprocessedTimetableItems){
+        timetableListView = findViewById(R.id.listTimetable);
+        TextView textNoClasses = findViewById(R.id.textNoClasses);
+        if(unprocessedTimetableItems.size() == 0){
+            timetableListView.setVisibility(View.GONE);
+            textNoClasses.setVisibility(View.VISIBLE);
+        }else{
+            timetableListView.setVisibility(View.VISIBLE);
+            textNoClasses.setVisibility(View.GONE);
+        }
+        List<TimetableItem> timetableItems = orderTimetable(unprocessedTimetableItems);
+
+        TimetableListAdapter timetableAdapter = new TimetableListAdapter(this, timetableItems);
+        timetableListView.setAdapter(timetableAdapter);
     }
 }
