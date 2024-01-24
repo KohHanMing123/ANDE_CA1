@@ -65,30 +65,39 @@ public class ConsentFormListPage extends AppCompatActivity {
                 return false;
             }
         });
-        renderConsentListView();
+        setUpConsentFormListView();
     }
 
-    private void renderConsentListView(){
+    private void setUpConsentFormListView(){
         DatabaseReference formReference = FirebaseDatabase.getInstance().getReference("Forms");
         List<ConsentFormItem> consentFormItems = new ArrayList<>();
         formReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot forms : snapshot.getChildren()){
-                    ConsentFormItem newConsentForm = new ConsentFormItem(forms.getKey(), forms.child("Content").getValue().toString(), forms.child("Date").getValue().toString(), forms.child("Issued_by").getValue().toString());
+                    String formTitle = forms.getKey();
+                    String formContent = forms.child("Content").getValue().toString();
+                    String formDate = forms.child("Date").getValue().toString();
+                    String formIssuedBy =forms.child("Issued_by").getValue().toString();
+                    boolean formIsConsented = forms.child("User_consent").child(User.user_id).getValue(Boolean.class);
+                    System.out.println(formIsConsented);
+                    ConsentFormItem newConsentForm = new ConsentFormItem(formTitle, formContent, formDate, formIssuedBy,formIsConsented);
                     consentFormItems.add(newConsentForm);
                 }
-
+                renderConsentListView(consentFormItems);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("a",error.toString());
             }
         });
+
+    }
+
+    private void renderConsentListView(List<ConsentFormItem> consentFormItems){
+        System.out.println(consentFormItems.size());
         consentFormListView = findViewById(R.id.listConsentForm);
         ConsentFormListAdapter consentFormListAdapter = new ConsentFormListAdapter(this, consentFormItems);
         consentFormListView.setAdapter(consentFormListAdapter);
-
     }
 }

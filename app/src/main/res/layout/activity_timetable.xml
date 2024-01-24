@@ -130,7 +130,11 @@
             android:layout_height="160dp"
             android:layout_marginHorizontal="40px"
             android:layout_marginTop="30px"
+            android:background="#00FFFFFF"
+            android:cacheColorHint="#00FFFFFF"
             android:clickable="false"
+            android:divider="@color/transparent"
+            android:dividerHeight="20dp"
             android:visibility="visible" />
 
         <TextView

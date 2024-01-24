@@ -152,9 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupHomeworkListView() {
         listView = findViewById(R.id.listViewHW);
-
         List<HomeworkItem> homeworkItems = generateHWItems(); // method to create your list
-
         HomeworkListAdapter hwAdapter = new HomeworkListAdapter(this, homeworkItems);
         listView.setAdapter(hwAdapter);
 

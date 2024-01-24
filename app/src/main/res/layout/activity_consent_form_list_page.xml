@@ -25,9 +25,12 @@
 
         <ListView
             android:id="@+id/listConsentForm"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="560dp"
-            android:layout_marginTop="30dp" />
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:divider="@color/transparent"
+            android:dividerHeight="20dp" />
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

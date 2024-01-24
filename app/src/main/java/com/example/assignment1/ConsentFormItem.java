@@ -1,14 +1,24 @@
 package com.example.assignment1;
 
 public class ConsentFormItem {
-    private String title, content, dateCreated, issuedBy;
+    private static String selectedFormTitle;
+    private String content, dateCreated, issuedBy, title;
 
-    public ConsentFormItem(String title, String content, String dateCreated, String issuedBy) {
+    private boolean isConsented;
+
+
+
+    public ConsentFormItem(String title, String content, String dateCreated, String issuedBy, boolean isConsented) {
         this.title = title;
         this.content = content;
         this.dateCreated = dateCreated;
         this.issuedBy = issuedBy;
+        this.isConsented = isConsented;
     }
+//    public ConsentFormItem(String selectedFormTitle){
+//       this()
+//    }1
+
 
     public String getTitle() {
         return title;

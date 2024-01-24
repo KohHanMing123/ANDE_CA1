@@ -39,7 +39,7 @@ public class ConsentFormListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(R.layout.consent_form_list_item, parent, false);
+            convertView = inflater.inflate(R.layout.list, parent, false);
         }
 
         // replace data to the views
