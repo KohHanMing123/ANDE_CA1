@@ -33,26 +33,42 @@ import java.util.HashMap;
 public class LoginPage extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    SharedPreferences.Editor editor;
     public static final String user_id = "";
     private SharedPreferences prefs;
 
     private static final String TAG = "EmailPassword";
-    public static final String MyPREFERNCES = "LoginPref";
+    public static final String Login = "LoginPref";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Initialize and assign variable
         setContentView(R.layout.activity_login_page);
         mAuth = FirebaseAuth.getInstance();
+
+        // Shared pref config
+        prefs = getSharedPreferences(Login, Context.MODE_PRIVATE);
+        editor = prefs.edit();
+
+        // Checkbox listener
         CheckBox rmb_btn = findViewById(R.id.rmb_btn);
+        rmb_btn.setChecked(prefs.getBoolean("rmb", false));
         rmb_btn.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Toast.makeText(LoginPage.this, "IS THIS CHECKED? " + isChecked, Toast.LENGTH_SHORT).show();
             // Save the "remember me" setting in SharedPreferences
-            SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("rememberMe", isChecked);
+
+            editor.putBoolean("rmb", isChecked);  // Change the key to "rmb"
             editor.apply();
         });
+
+        String email = prefs.getString("email", "");
+        Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
+        boolean rmb = prefs.getBoolean("rmb", false); // Change the key to "rmb"
+
+        if (rmb) {
+            EditText emailInput = findViewById(R.id.email_input);
+            emailInput.setText(email);
+        }
 
         Button registerButton = findViewById(R.id.registerButton);
 
@@ -79,7 +95,6 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
                                     Log.d(TAG, "signInWithEmail:success");
                                     Toast.makeText(LoginPage.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
 
@@ -105,15 +120,30 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
 
                                                 User user = new User(uId,userName,className, phoneNo, erName, erRelationship);
 
-                                                Toast.makeText(LoginPage.this, "", Toast.LENGTH_SHORT).show();
+                                                editor.putBoolean("bioAuth", true);
+                                                editor.apply();
+
+                                                CheckBox rmb_btn = findViewById(R.id.rmb_btn);
+                                                boolean rememberMe = rmb_btn.isChecked();
+
+                                                if(rememberMe){
+                                                    EditText emailInput = (EditText) findViewById(R.id.email_input);
+                                                    String email = emailInput.getText().toString();
+                                                    editor.putString("email", email);
+                                                    editor.apply();
+                                                } else {
+                                                    editor.putString("email", "");
+                                                    editor.apply();
+                                                }
+
                                                 Intent intent = new Intent(LoginPage.this, MainActivity.class);
                                                 startActivity(intent);
+
                                             }
                                         }
                                     });
 
                                 } else {
-                                    // If sign in fails, display a message to the user.
                                     Log.w(TAG, "signInWithEmail:failure", task.getException());
                                     Toast.makeText(LoginPage.this, "Authentication failed.",
                                             Toast.LENGTH_SHORT).show();
@@ -126,25 +156,12 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
             } catch (Exception e) {
                 Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        boolean rememberMe = sharedPreferences.getBoolean("rememberMe", false);
-
-        // if user exists and has clicked on remember me, it will log the user in onStart
-        if (currentUser != null && rememberMe) {
-            Toast.makeText(LoginPage.this, currentUser.getEmail(), Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        } else {
-            Toast.makeText(LoginPage.this, "No Authentication", Toast.LENGTH_SHORT).show();
-        }
+    public void onClickForget(View v ){
+        Intent intent = new Intent(this, ForgetPassword.class);
+        startActivity(intent);
     }
 
 }
