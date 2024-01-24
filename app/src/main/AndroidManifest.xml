@@ -19,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ConsentFormDetailPage"
+            android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -42,9 +44,9 @@
         <activity
             android:name=".AnnouncementList"
             android:exported="false"
-            android:parentActivityName=".MainActivity"
             android:label="Announcements"
-            android:theme="@style/mainActionBar"/>
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/mainActionBar" />
         <activity
             android:name=".ForgetPassword"
             android:exported="false"
@@ -122,11 +124,13 @@
         <activity
             android:name=".LoginPage"
             android:exported="false">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
             <!-- intent filter to be commented out, change exported to false -->
 
             <meta-data

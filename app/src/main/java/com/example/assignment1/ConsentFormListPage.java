@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,7 +29,7 @@ public class ConsentFormListPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consent_form_list_page);
-
+        consentFormListView = findViewById(R.id.listConsentForm);
         // Initialize and assign variable
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
 
@@ -65,6 +67,16 @@ public class ConsentFormListPage extends AppCompatActivity {
                 return false;
             }
         });
+        consentFormListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ConsentFormItem clickedConsentForm = (ConsentFormItem) parent.getItemAtPosition(position);
+                Intent intent = new Intent(ConsentFormListPage.this, ConsentFormDetailPage.class);
+                intent.putExtra("consentFormTitle", clickedConsentForm.getTitle());
+
+                startActivity(intent);
+            }
+        });
         setUpConsentFormListView();
     }
 
@@ -95,8 +107,6 @@ public class ConsentFormListPage extends AppCompatActivity {
     }
 
     private void renderConsentListView(List<ConsentFormItem> consentFormItems){
-        System.out.println(consentFormItems.size());
-        consentFormListView = findViewById(R.id.listConsentForm);
         ConsentFormListAdapter consentFormListAdapter = new ConsentFormListAdapter(this, consentFormItems);
         consentFormListView.setAdapter(consentFormListAdapter);
     }

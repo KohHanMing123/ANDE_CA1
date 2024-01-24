@@ -43,11 +43,11 @@ public class ConsentFormListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.consent_form_list_item, parent, false);
         }
 
-        // replace data to the views
         TextView textViewTitle = convertView.findViewById(R.id.textConsentTitle);
         TextView textViewDate = convertView.findViewById(R.id.textConsentDate);
         TextView textViewCreatedBy = convertView.findViewById(R.id.textConsentBy);
         ImageView imageIsConsented = convertView.findViewById(R.id.imageIsConsented);
+
         ConsentFormItem consentFormItem = consentFormItems.get(position);
 
         textViewTitle.setText(consentFormItem.getTitle());
