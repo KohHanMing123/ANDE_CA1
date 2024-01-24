@@ -137,6 +137,8 @@ public class SOSPage extends AppCompatActivity {
     }
 
 
+
+
     private void setupPulsatingAnimation() {
         final Animation pulse = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
