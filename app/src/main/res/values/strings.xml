@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Assignment1</string>
 
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyCjTcoOiw3Am5MY3Xl-W005jwq4jWF9NUY
+    </string>
+
     <string name="quiz_name_1">Quiz 1</string>
     <string name="subtext_1">A beginner typescript</string>
 
@@ -47,4 +51,5 @@
         <item>Relative</item>
         <item>Others</item>
     </string-array>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

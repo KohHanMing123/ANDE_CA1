@@ -16,8 +16,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.assignment1.databinding.ActivityMapsBinding;
 
-// problem rendering map, could be API version issue
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -83,3 +81,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 }
+
