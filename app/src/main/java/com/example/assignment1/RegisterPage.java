@@ -67,8 +67,8 @@ public class RegisterPage extends AppCompatActivity {
             public void onClick(View v) {
                 // Handle back arrow click
                 onBackPressed();
-//                Intent intent = new Intent(RegisterPage.this, LoginPage.class);
-//                startActivity(intent);
+    //                Intent intent = new Intent(RegisterPage.this, LoginPage.class);
+    //                startActivity(intent);
             }
         });
 
@@ -120,9 +120,9 @@ public class RegisterPage extends AppCompatActivity {
                             mDatabase.child(uid).child("user_name").setValue(username);
                             mDatabase.child(uid).child("class_name").setValue(selectedClass);
 
-                            mDatabase.child(uid).child("er_name").setValue("not set");
-                            mDatabase.child(uid).child("er_relationship").setValue("not set");
-                            mDatabase.child(uid).child("phone_no").setValue("not set");
+                            mDatabase.child(uid).child("er_name").setValue("Not set");
+                            mDatabase.child(uid).child("er_relationship").setValue("Others");
+                            mDatabase.child(uid).child("phone_no").setValue("Not set");
 
                             Toast.makeText(RegisterPage.this, "Successful registration of " + username, Toast.LENGTH_SHORT).show();
 

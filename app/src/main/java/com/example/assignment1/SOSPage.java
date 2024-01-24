@@ -30,9 +30,12 @@ import java.util.Locale;
 
 public class SOSPage extends AppCompatActivity {
     private Button sosButton;
+    private static final int CLICK_THRESHOLD = 3;
     private int clickCount = 0;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private boolean isLocationRequested = false;
+    private boolean isMapActivityLaunched = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,13 @@ public class SOSPage extends AppCompatActivity {
                         Address address = addresses.get(0);
                         String locationName = address.getAddressLine(0); // Get the full address
                         showToast("Current Location: " + locationName);
+
+                        showMapActivity(location.getLatitude(), location.getLongitude(), locationName);
+
+                        isMapActivityLaunched = true;
+
+                        locationManager.removeUpdates(locationListener);
+
                     } else {
                         showToast("Unable to retrieve location name.");
                     }
@@ -94,13 +104,13 @@ public class SOSPage extends AppCompatActivity {
             public void onClick(View v) {
                 clickCount++;
 
-                if (clickCount == 3) {
+                if (clickCount == CLICK_THRESHOLD && !isLocationRequested) {
+                    isLocationRequested = true;
                     clickCount = 0;
 
                     // Check and request location updates
                     if (checkLocationPermission()) {
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
-
                     }
                 }
             }
@@ -117,6 +127,17 @@ public class SOSPage extends AppCompatActivity {
             }
         });
     }
+
+    private void showMapActivity(double latitude, double longitude, String locationName) {
+        Intent mapIntent = new Intent(SOSPage.this, MapsActivity.class);
+        mapIntent.putExtra("latitude", latitude);
+        mapIntent.putExtra("longitude", longitude);
+        mapIntent.putExtra("locationName", locationName);
+        startActivity(mapIntent);
+    }
+
+
+
 
     private void setupPulsatingAnimation() {
         final Animation pulse = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f,
@@ -147,7 +168,9 @@ public class SOSPage extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            if (isLocationRequested) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            }
         }
     }
 
@@ -158,8 +181,9 @@ public class SOSPage extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationManager.removeUpdates(locationListener);
+        if (locationManager != null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+        }
     }
-
 
 }
