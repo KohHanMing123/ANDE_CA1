@@ -1,7 +1,6 @@
 package com.example.assignment1;
 
 public class ConsentFormItem {
-    private static String selectedFormTitle;
     private String content, dateCreated, issuedBy, title;
 
     private boolean isConsented;

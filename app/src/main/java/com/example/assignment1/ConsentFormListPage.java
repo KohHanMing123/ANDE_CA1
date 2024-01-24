@@ -73,7 +73,7 @@ public class ConsentFormListPage extends AppCompatActivity {
                 ConsentFormItem clickedConsentForm = (ConsentFormItem) parent.getItemAtPosition(position);
                 Intent intent = new Intent(ConsentFormListPage.this, ConsentFormDetailPage.class);
                 intent.putExtra("consentFormTitle", clickedConsentForm.getTitle());
-
+                System.out.println(clickedConsentForm.getTitle());
                 startActivity(intent);
             }
         });
@@ -92,7 +92,6 @@ public class ConsentFormListPage extends AppCompatActivity {
                     String formDate = forms.child("Date").getValue().toString();
                     String formIssuedBy =forms.child("Issued_by").getValue().toString();
                     boolean formIsConsented = forms.child("User_consent").child(User.user_id).getValue(Boolean.class);
-                    System.out.println(formIsConsented);
                     ConsentFormItem newConsentForm = new ConsentFormItem(formTitle, formContent, formDate, formIssuedBy,formIsConsented);
                     consentFormItems.add(newConsentForm);
                 }

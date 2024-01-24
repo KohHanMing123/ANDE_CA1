@@ -56,15 +56,21 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView4"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:paddingHorizontal="50dp"
-        android:paddingVertical="20dp"
-        android:text="TextView"
-        android:textColor="#000000"
-        android:textSize="15dp" />
+        android:layout_height="450dp">
+
+        <TextView
+            android:id="@+id/textFormContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="always"
+            android:paddingHorizontal="50dp"
+            android:paddingVertical="20dp"
+            android:text="TextView"
+            android:textColor="#000000"
+            android:textSize="15dp" />
+    </ScrollView>
 
     <androidx.cardview.widget.CardView
         android:layout_width="250dp"
