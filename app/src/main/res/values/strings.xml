@@ -47,4 +47,11 @@
         <item>Relative</item>
         <item>Others</item>
     </string-array>
+
+    <string-array name="announcement_options">
+        <item>All</item>
+        <item>Recommendation</item>
+        <item>Reminder</item>
+        <item>Accomplishment</item>
+    </string-array>
 </resources>

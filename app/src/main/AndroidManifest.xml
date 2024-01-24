@@ -20,11 +20,17 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
+            android:name=".AnnouncementList"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:label="Announcements"
+            android:theme="@style/mainActionBar"/>
+        <activity
             android:name=".ForgetPassword"
             android:exported="false"
             android:label="Forget Password"
             android:parentActivityName=".LoginPage"
-            android:theme="@style/mainActionBar"/>
+            android:theme="@style/mainActionBar" />
         <activity
             android:name=".ConsentFormListPage"
             android:exported="false" />
@@ -35,7 +41,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".SOSPage"
             android:exported="false">
@@ -80,7 +85,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".EditPage"
             android:exported="false">

@@ -207,6 +207,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickAnnoucements(View v){
+        Intent intent = new Intent(this, AnnouncementList.class);
+        startActivity(intent);
+    }
+
     private void initiateBiometricAuthentication() {
 
         BiometricManager biometricManager = BiometricManager.from(this);
