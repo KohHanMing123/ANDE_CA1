@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.ValueEventListener;
@@ -39,20 +40,24 @@ public class ConsentFormListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(R.layout.list, parent, false);
+            convertView = inflater.inflate(R.layout.consent_form_list_item, parent, false);
         }
 
         // replace data to the views
         TextView textViewTitle = convertView.findViewById(R.id.textConsentTitle);
         TextView textViewDate = convertView.findViewById(R.id.textConsentDate);
         TextView textViewCreatedBy = convertView.findViewById(R.id.textConsentBy);
-        TextView textViewVenue = convertView.findViewById(R.id.textVenue);
-
+        ImageView imageIsConsented = convertView.findViewById(R.id.imageIsConsented);
         ConsentFormItem consentFormItem = consentFormItems.get(position);
 
         textViewTitle.setText(consentFormItem.getTitle());
         textViewDate.setText(consentFormItem.getDateCreated());
         textViewCreatedBy.setText(consentFormItem.getIssuedBy());
+        if(consentFormItem.getIsConsented()){
+            imageIsConsented.setImageResource(R.drawable.tick);
+        }else{
+            imageIsConsented.setImageResource(R.drawable.cross);
+        }
 
         return convertView;
     }

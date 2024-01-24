@@ -35,4 +35,6 @@ public class ConsentFormItem {
     public String getIssuedBy() {
         return issuedBy;
     }
+
+    public boolean getIsConsented(){return isConsented; }
 }
