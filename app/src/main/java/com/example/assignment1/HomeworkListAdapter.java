@@ -47,7 +47,6 @@ public class HomeworkListAdapter extends BaseAdapter {
         ImageView arrowImage = convertView.findViewById(R.id.arrowImage);
 
         HomeworkItem hwItem = homeworkItems.get(position);
-        System.out.println(hwItem.getHWTitle());
         textViewHWTitle.setText(hwItem.getHWTitle());
         textViewHWSubject.setText(hwItem.getHWSubject());
         arrowImage.setImageResource(R.drawable.rightarrow);

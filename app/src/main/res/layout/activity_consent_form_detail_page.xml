@@ -17,7 +17,7 @@
         android:paddingTop="20dp">
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/ibuttonBack"
             android:layout_width="51dp"
             android:layout_height="34dp"
             android:layout_weight="0"
@@ -57,6 +57,7 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/scrollViewContent"
         android:layout_width="match_parent"
         android:layout_height="450dp">
 
@@ -73,21 +74,22 @@
     </ScrollView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardBackground"
         android:layout_width="250dp"
         android:layout_height="65dp"
         android:layout_gravity="center"
         android:background="@color/transparent"
-        app:cardBackgroundColor="@color/orange"
-        app:cardCornerRadius="10dp">
+        app:cardBackgroundColor="@color/disabled_orange"
+        app:cardCornerRadius="15dp">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/buttonConsent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="#00FFFFFF"
             android:fontFamily="@font/lexend_medium"
-            android:text="Agree"
+            android:text="Please Read Form"
             android:textColor="#FFFFFF"
             android:textSize="18dp" />
     </androidx.cardview.widget.CardView>

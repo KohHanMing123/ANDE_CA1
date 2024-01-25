@@ -2,10 +2,16 @@ package com.example.assignment1;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,11 +24,33 @@ public class ConsentFormDetailPage extends AppCompatActivity {
     private String formTitle;
     private ConsentFormItem consentFormDetails;
     private TextView textFormTitle, textFormCreatedBy, textFormContent;
+    private CardView cardBackground;
+    private Button consentButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consent_form_detail_page);
+        ImageButton backButton = findViewById(R.id.ibuttonBack);
+        cardBackground = findViewById(R.id.cardBackground);
+        consentButton = findViewById(R.id.buttonConsent);
+        ScrollView scrollViewContent = findViewById(R.id.scrollViewContent);
+        //Setting onclick listeners
+        consentButton.setOnClickListener(v -> consentForm());
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ConsentFormDetailPage.this, ConsentFormListPage.class);
+            startActivity(intent);
+        });
+        //Detecting if scrollview is at bottom
+        scrollViewContent.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if (!scrollViewContent.canScrollVertically(1)) {
+                    enableConsentButton();
+                }
+            }
+        });
+
 
         formTitle = getIntent().getStringExtra("consentFormTitle");
         fetchForm();
@@ -40,7 +68,9 @@ public class ConsentFormDetailPage extends AppCompatActivity {
                         String formDate = forms.child("Date").getValue().toString();
                         String formIssuedBy =forms.child("Issued_by").getValue().toString();
                         boolean formIsConsented = forms.child("User_consent").child(User.user_id).getValue(Boolean.class);
-                        System.out.println(formIsConsented);
+                        if(formIsConsented){
+                            formAlreadyConsent();
+                        }
                         consentFormDetails = new ConsentFormItem(formTitle, formContent, formDate, formIssuedBy,formIsConsented);
                     }
                 }
@@ -53,6 +83,13 @@ public class ConsentFormDetailPage extends AppCompatActivity {
         });
     }
 
+    private void formAlreadyConsent(){
+        consentButton.setText("You Have Consented");
+        consentButton.setClickable(false);
+
+        cardBackground.setCardBackgroundColor(getColor(R.color.disabled_orange));
+    }
+
     private void renderFormDetails(){
         textFormTitle = findViewById(R.id.textFormTitle);
         textFormCreatedBy = findViewById(R.id.textFormCreatedBy);
@@ -61,5 +98,17 @@ public class ConsentFormDetailPage extends AppCompatActivity {
         textFormTitle.setText(consentFormDetails.getTitle());
         textFormCreatedBy.setText(consentFormDetails.getIssuedBy());
         textFormContent.setText(consentFormDetails.getContent());
+    }
+
+
+    private void consentForm(){
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("Forms").child(formTitle).child("User_consent").child(User.user_id).setValue(true);
+        Intent intent = new Intent(ConsentFormDetailPage.this, ConsentFormListPage.class);
+        startActivity(intent);
+    }
+    private void enableConsentButton(){
+        consentButton.setText("Agree");
+        cardBackground.setCardBackgroundColor(getColor(R.color.orange));
     }
 }

@@ -73,7 +73,6 @@ public class ConsentFormListPage extends AppCompatActivity {
                 ConsentFormItem clickedConsentForm = (ConsentFormItem) parent.getItemAtPosition(position);
                 Intent intent = new Intent(ConsentFormListPage.this, ConsentFormDetailPage.class);
                 intent.putExtra("consentFormTitle", clickedConsentForm.getTitle());
-                System.out.println(clickedConsentForm.getTitle());
                 startActivity(intent);
             }
         });
@@ -91,7 +90,12 @@ public class ConsentFormListPage extends AppCompatActivity {
                     String formContent = forms.child("Content").getValue().toString();
                     String formDate = forms.child("Date").getValue().toString();
                     String formIssuedBy =forms.child("Issued_by").getValue().toString();
-                    boolean formIsConsented = forms.child("User_consent").child(User.user_id).getValue(Boolean.class);
+                    boolean formIsConsented = false;
+                    try{
+                        formIsConsented = forms.child("User_consent").child(User.user_id).getValue(Boolean.class);
+                    }catch(NullPointerException e){
+                        createUserIDConsentedField(formReference, formTitle);
+                    }
                     ConsentFormItem newConsentForm = new ConsentFormItem(formTitle, formContent, formDate, formIssuedBy,formIsConsented);
                     consentFormItems.add(newConsentForm);
                 }
@@ -103,6 +107,11 @@ public class ConsentFormListPage extends AppCompatActivity {
             }
         });
 
+    }
+
+    //For new users
+    private void createUserIDConsentedField(DatabaseReference formReference, String formTitle){
+        formReference.child(formTitle).child("User_consent").child(User.user_id).setValue(false);
     }
 
     private void renderConsentListView(List<ConsentFormItem> consentFormItems){
