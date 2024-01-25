@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +33,7 @@ import java.util.List;
         private int currentPosition = 0; // to track current question position
         private ProgressBar progressBar;
         private TextView questionCount;
+        private int userScore = 0;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +95,7 @@ import java.util.List;
                         }
                     }
 
-                    adapter = new QuizPagerAdapter(getSupportFragmentManager(), questions);
+                    adapter = new QuizPagerAdapter(getSupportFragmentManager(), questions, userScore);
                     viewPager.setAdapter(adapter);
                     setTitleAndNextButton();
 
@@ -103,11 +105,26 @@ import java.util.List;
                     updateProgressBar();
                 }
 
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Log.e("QuizDetail", "Database Error: " + databaseError.getMessage());
                 }
             });
+        }
+        public void incrementUserScore() {
+            userScore++;
+            Log.d("QuizDetail", "User Score: " + userScore);
+        }
+
+        private void navigateToQuizResult() {
+            // You can pass the user score and total number of questions to QuizResult activity
+            int totalQuestions = adapter.getCount();
+            Intent intent = new Intent(QuizDetail.this, QuizResult.class);
+            intent.putExtra("userScore", userScore);
+            intent.putExtra("totalQuestions", totalQuestions);
+            startActivity(intent);
+            finish();
         }
 
         private void setTitleAndNextButton() {
@@ -125,7 +142,7 @@ import java.util.List;
                             updateProgressBar();
                         } else {
                             Toast.makeText(QuizDetail.this, "No more questions", Toast.LENGTH_SHORT).show();
-                            finish();
+                            navigateToQuizResult();
                         }
                     }
                 });

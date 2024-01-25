@@ -22,14 +22,15 @@ public class QuestionFragment extends Fragment {
     private List<String> options;
     private boolean[] isOptionCorrect;
     private Button[] optionButtons;
+    private int userScore;
 
-
-    public static QuestionFragment newInstance(String questionTitle, List<String> options, boolean[] isCorrectArray) {
+    public static QuestionFragment newInstance(String questionTitle, List<String> options, boolean[] isCorrectArray, int userScore) {
         QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
         args.putString("questionTitle", questionTitle);
         args.putStringArrayList("options", (ArrayList<String>) options);
         args.putBooleanArray("isCorrectArray", isCorrectArray);
+        args.putInt("userScore", userScore);
         fragment.setArguments(args);
 
         return fragment;
@@ -90,33 +91,28 @@ public class QuestionFragment extends Fragment {
 
         for (int i = 0; i < optionButtons.length; i++) {
             Button currentButton = optionButtons[i];
+            Log.d("QuestionFragment", "Selected Option " + selectedOptionIndex + " isCorrect: " + isCorrect);
 
-            if (isOptionCorrect[i]) {
-                currentButton.setBackgroundResource(R.drawable.correct_button_background);
-            } else {
-                // Incorrect option or unselected option
-                if (i == selectedOptionIndex) {
-                    // Selected option
-                    if (isCorrect) {
-                        // Correct option
-                        currentButton.setBackgroundResource(R.drawable.correct_button_background);
-                    } else {
-                        // Incorrect option
-                        currentButton.setBackgroundResource(R.drawable.incorrect_button_background);
-                    }
+
+            if (i == selectedOptionIndex) {
+                if (isCorrect) {
+                    currentButton.setBackgroundResource(R.drawable.correct_button_background);
+                    showToast("Correct");
+                    ((QuizDetail) requireActivity()).incrementUserScore(); // Call the method in QuizDetail
                 } else {
-                    // Unselected and not correct option
+                    currentButton.setBackgroundResource(R.drawable.incorrect_button_background);
+                    showToast("Incorrect");
+                }
+            } else {
+                if (isOptionCorrect[i]) {
+                    currentButton.setBackgroundResource(R.drawable.correct_button_background);
+                } else {
                     currentButton.setBackgroundResource(R.drawable.rounded_button_background);
                 }
             }
         }
-
-        if (isCorrect) {
-            showToast("Correct");
-        } else {
-            showToast("Incorrect");
-        }
     }
+
 
 
     private void disableAllButtons() {
@@ -138,6 +134,7 @@ public class QuestionFragment extends Fragment {
             questionTitle = getArguments().getString("questionTitle", "");
             options = getArguments().getStringArrayList("options");
             isOptionCorrect = getArguments().getBooleanArray("isCorrectArray");
+            userScore = getArguments().getInt("userScore", 0);
         }
 
         if (isOptionCorrect != null) {

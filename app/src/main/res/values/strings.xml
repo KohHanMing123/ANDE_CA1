@@ -59,4 +59,6 @@
         <item>Accomplishment</item>
     </string-array>
     <string name="title_activity_maps">MapsActivity</string>
+
+    <string name="result_message">Your total score is %1$d / %2$d (%3$d%%)</string>
 </resources>
