@@ -32,7 +32,6 @@ import java.util.Locale;
 public class Timetable extends AppCompatActivity implements View.OnClickListener {
     private final long selectedDate = -1;
 
-    TimetableAPI timetableAPI;
     private DatabaseReference databaseReference;
     private ListView timetableListView;
 

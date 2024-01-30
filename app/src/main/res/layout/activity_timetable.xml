@@ -28,15 +28,6 @@
             android:layout_marginTop="20px"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/btnBackArrow"
-                android:layout_width="150px"
-                android:layout_height="match_parent"
-
-                android:background="#00FFFFFF"
-                android:scaleType="center"
-                android:src="@drawable/arrow" />
-
             <TextView
                 android:id="@+id/textHeaderMonthYear"
                 android:layout_width="wrap_content"
@@ -44,7 +35,6 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/lexend_medium"
                 android:gravity="center"
-                android:paddingRight="150px"
                 android:text="Month Year"
                 android:textSize="30dp" />
 
