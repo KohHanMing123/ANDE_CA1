@@ -7,17 +7,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class HomeworkPage extends AppCompatActivity {
-
+    static ExpandableListView expandableListView;
+    private DatabaseReference databaseReference;
+    static HomeworkExpandableListAdapter expandableListViewAdapter;
+    private List<String> homeworkSubjectList = new ArrayList<>();
+    private HashMap<String, List<HomeworkItem>> homeworkItemList =  new HashMap<String, List<HomeworkItem>>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,22 +58,81 @@ public class HomeworkPage extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), HomeworkPage.class));
                     overridePendingTransition(0, 0);
                     return true;
-                }  else if (itemId == R.id.time) {
+                } else if (itemId == R.id.time) {
                     startActivity(new Intent(getApplicationContext(), QuizPage.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.calendar) {
-                    startActivity(new Intent(getApplicationContext(), EditPage.class));
+                    startActivity(new Intent(getApplicationContext(), Timetable.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.form) {
-                    startActivity(new Intent(getApplicationContext(), SettingsPage.class));
+                    startActivity(new Intent(getApplicationContext(), ConsentFormListPage.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }
-
                 return false;
             }
         });
+        Button btnSeePastHW = findViewById(R.id.buttonSeePastHomework);
+        btnSeePastHW.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeworkPage.this, PastHomeworkPage.class));
+            }
+        });
+        databaseReference = FirebaseDatabase.getInstance().getReference("Homework").child(User.class_name);
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                dateFormat.setLenient(false);
+                Date hwDate;
+
+                int i = 0;
+                Date tdyDate = new Date();
+                for(DataSnapshot homeworkSubject: snapshot.getChildren()){
+                    homeworkSubjectList.add(homeworkSubject.getKey().toString());
+                    List<HomeworkItem> temporaryHomeworkListItems = new ArrayList<>();
+                    for(DataSnapshot homeworkItem: homeworkSubject.getChildren()){
+                        try {
+                            hwDate = dateFormat.parse(homeworkItem.child("Due_Date").getValue().toString());
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        if(tdyDate.before(hwDate)){
+                            try{
+                                temporaryHomeworkListItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
+                            }catch(NullPointerException e){
+                                homeworkItem.getRef().child("User_Completed").child(User.user_id).setValue(false);
+                                temporaryHomeworkListItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
+                            }
+                        }
+                    }
+                    homeworkItemList.put(homeworkSubject.getKey().toString(), temporaryHomeworkListItems);
+                    i++;
+                }
+                renderExpListView();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("a",error.toString());
+            }
+
+        });
+
     }
+
+    private void renderExpListView(){
+        expandableListView = findViewById(R.id.homeworkExpandableListView);
+
+        expandableListViewAdapter = new HomeworkExpandableListAdapter(this, homeworkSubjectList, homeworkItemList);
+        expandableListView.setAdapter(expandableListViewAdapter);
+    }
+
 }

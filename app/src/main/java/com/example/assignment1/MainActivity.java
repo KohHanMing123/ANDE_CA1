@@ -9,7 +9,6 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,10 +178,10 @@ public class MainActivity extends AppCompatActivity {
     private List<HomeworkItem> generateHWItems() {
         List<HomeworkItem> homeworkItems = new ArrayList<HomeworkItem>() {
             {
-                add(new HomeworkItem("Daily Problem Sums", "Mathematics"));
-                add(new HomeworkItem("Workbook Page 31-33", "Chinese"));
-                add(new HomeworkItem("Exercise 3B", "Science"));
-                add(new HomeworkItem("Learn Spelling", "English"));
+                add(new HomeworkItem("Daily Problem Sums", "Mathematics", "2/02/2042", false));
+                add(new HomeworkItem("Workbook Page 31-33", "Chinese", "2/02/2042", false));
+                add(new HomeworkItem("Exercise 3B", "Science", "2/02/2042", false));
+                add(new HomeworkItem("Learn Spelling", "English", "2/02/2042", false));
             }
         };
         return homeworkItems;

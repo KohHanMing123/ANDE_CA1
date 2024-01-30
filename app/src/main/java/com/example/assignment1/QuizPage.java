@@ -128,20 +128,19 @@ public class QuizPage extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), HomeworkPage.class));
                     overridePendingTransition(0, 0);
                     return true;
-                }  else if (itemId == R.id.time) {
+                } else if (itemId == R.id.time) {
                     startActivity(new Intent(getApplicationContext(), QuizPage.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.calendar) {
-                    startActivity(new Intent(getApplicationContext(), EditPage.class));
+                    startActivity(new Intent(getApplicationContext(), Timetable.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (itemId == R.id.form) {
-                    startActivity(new Intent(getApplicationContext(), SettingsPage.class));
+                    startActivity(new Intent(getApplicationContext(), ConsentFormListPage.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }
-
                 return false;
             }
         });
