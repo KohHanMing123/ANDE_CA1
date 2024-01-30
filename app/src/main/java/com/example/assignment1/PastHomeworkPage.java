@@ -24,6 +24,8 @@ import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,20 +56,13 @@ public class PastHomeworkPage extends AppCompatActivity {
             @Override
 
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                dateFormat.setLenient(false);
-                Date hwDate;
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate hwDate;
 
-                Date tdyDate = new Date();
+                LocalDate tdyDate = LocalDate.now();
                 for(DataSnapshot homeworkSubject: snapshot.getChildren()){
-
-                    try {
-                        hwDate = dateFormat.parse(homeworkSubject.child("Due_Date").getValue().toString());
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    if(tdyDate.after(hwDate)){
+                    hwDate = LocalDate.parse(homeworkSubject.child("Due_Date").getValue().toString(), dateFormat);
+                    if(tdyDate.isAfter(hwDate)){
                         homeworkItems.add(new HomeworkItem(homeworkSubject.getKey().toString(), homeworkSubject.getKey().toString(), homeworkSubject.child("Due_Date").getValue().toString(), homeworkSubject.child("User_Completed").child(User.user_id).getValue(boolean.class)));
                     }
                 }

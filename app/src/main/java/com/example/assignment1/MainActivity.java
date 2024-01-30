@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -27,44 +28,42 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
 
 
+
     ListView listView;
     private SharedPreferences prefs;
     SharedPreferences.Editor editor;
+    private DatabaseReference databaseReference;
     TextView textView, announcementTextView;
     ImageSwitcher announcementImageSwitcher;
     private final int[] announcementImages = {R.drawable.books, R.drawable.assembly_announcement, R.drawable.recess_party};
-    //    private final String[] announcementText = {"National Book Day on 25 November!", "Joakim & Sonia this Wednesday!", "Recess Party on 1 December!"};
-    private String[] announcementText = new String[3];
+    private final String[] announcementText = {"National Book Day on 25 November!", "Joakim & Sonia this Wednesday!", "Recess Party on 1 December!"};
     private int currentIndex = 0;
-    private DatabaseReference mDatabase;
     private final Handler handler = new Handler();
 
     private Executor executor;
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
+
+    private  List<HomeworkItem> homeworkItems = new ArrayList<HomeworkItem>();
 
     String[] listItem;
 
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         boolean bioAuth = prefs.getBoolean("bioAuth", false);
 
-        if (!bioAuth) {
+        if(!bioAuth){
             initiateBiometricAuthentication();
             editor.putBoolean("bioAuth", true);
             editor.apply();
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRestart() {
+    public void onRestart(){
         editor.putBoolean("bioAuth", false);
         editor.apply();
         super.onRestart();
@@ -89,49 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Announcement");
-        Query query = mDatabase.orderByChild("Timestamp").limitToLast(3);
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> announcementList = new ArrayList<>();
-
-                // Iterate through the top 3 announcements
-                for (DataSnapshot announcementSnapshot : dataSnapshot.getChildren()) {
-                    try {
-                        // Make sure the fields exist and have non-null values
-                        String title = announcementSnapshot.child("Title").getValue(String.class);
-                        String date = announcementSnapshot.child("Date").getValue(String.class);
-                        String annText = title + " on " + date;
-                        // Check for null values before processing
-                        if (title != null && date != null) {
-                            // Combine information into a string
-
-                            announcementList.add(annText);
-                        }
-                    } catch (Exception e) {
-                        Toast.makeText(MainActivity.this, "purr", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                String[] announcementArray = announcementList.toArray(new String[0]);
-                announcementText = announcementArray;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle error
-                Toast.makeText(MainActivity.this, "Error retrieving announcements", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
-        // setting sharedPref
-        prefs = getSharedPreferences(LoginPage.Login, MODE_PRIVATE);
-        editor = prefs.edit();
+        prefs=getSharedPreferences(LoginPage.Login, MODE_PRIVATE);
+        editor= prefs.edit();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -200,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
         welcomeText.startAnimation(flies);
 
 
+
         announcementImageSwitcher = findViewById(R.id.imageSwitcherAnnouncement);
         announcementTextView = findViewById(R.id.textViewAnnouncement);
         announcementImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
@@ -212,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
                 return myView;
             }
         });
-
         announcementImageSwitcher.setInAnimation(AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.fade_in));
         announcementImageSwitcher.setOutAnimation(AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.fade_out));
         announcementImageSwitcher.setImageResource(announcementImages[currentIndex]);
@@ -220,27 +178,60 @@ public class MainActivity extends AppCompatActivity {
         long interval = 3000L; // 3 seconds
         handler.postDelayed(announcementSwitchRunnable, interval);
         setupHomeworkListView();
-        generateHWItems();
+    }
+    private void renderHWList(){
+        listView = findViewById(R.id.listViewHW);
+        HomeworkListAdapter hwAdapter = new HomeworkListAdapter(this, homeworkItems);
+        listView.setAdapter(hwAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, HomeworkPage.class);
+                intent.putExtra("clickedHomeworkSubject", homeworkItems.get(position).getHWSubject());
+                startActivity(intent);
+            }
+        });
     }
 
     private void setupHomeworkListView() {
-        listView = findViewById(R.id.listViewHW);
-        List<HomeworkItem> homeworkItems = generateHWItems(); // method to create your list
-        HomeworkListAdapter hwAdapter = new HomeworkListAdapter(this, homeworkItems);
-        listView.setAdapter(hwAdapter);
+        homeworkItems.clear();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Homework").child(User.class_name);
 
-    }
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
-    private List<HomeworkItem> generateHWItems() {
-        List<HomeworkItem> homeworkItems = new ArrayList<HomeworkItem>() {
-            {
-                add(new HomeworkItem("Daily Problem Sums", "Mathematics", "2/02/2042", false));
-                add(new HomeworkItem("Workbook Page 31-33", "Chinese", "2/02/2042", false));
-                add(new HomeworkItem("Exercise 3B", "Science", "2/02/2042", false));
-                add(new HomeworkItem("Learn Spelling", "English", "2/02/2042", false));
+            @Override
+
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate hwDate;
+
+                int i = 0;
+                LocalDate tdyDate = LocalDate.now();
+                LocalDate oneWeekDate = LocalDate.now().plusDays(7);
+
+                for(DataSnapshot homeworkSubject: snapshot.getChildren()){
+                    for(DataSnapshot homeworkItem: homeworkSubject.getChildren()){
+                        hwDate = LocalDate.parse(homeworkItem.child("Due_Date").getValue().toString(), dateFormat);
+
+                        if(tdyDate.isBefore(hwDate) && hwDate.isBefore(oneWeekDate) ){
+                            try{
+                                homeworkItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
+                            }catch(NullPointerException e){
+                                homeworkItem.getRef().child("User_Completed").child(User.user_id).setValue(false);
+                                homeworkItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
+                            }
+                        }
+                    }
+                }
+                renderHWList();
             }
-        };
-        return homeworkItems;
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("a",error.toString());
+            }
+
+        });
     }
 
     private final Runnable announcementSwitchRunnable = new Runnable() {
@@ -251,19 +242,20 @@ public class MainActivity extends AppCompatActivity {
             announcementImageSwitcher.setImageResource(announcementImages[currentIndex]);
             announcementTextView.setText(announcementText[currentIndex]);
 
+
             long interval = 3000L; // 3 seconds
             handler.postDelayed(this, interval);
         }
     };
 
-    public void onClickSettings(View v) {
-        if (v.getId() == R.id.settings_btn) {
+    public void onClickSettings(View v){
+        if (v.getId() ==R.id.settings_btn){
             Intent intent = new Intent(this, SettingsPage.class);
             startActivity(intent);
         }
     }
 
-    public void onClickAnnoucements(View v) {
+    public void onClickAnnoucements(View v){
         Intent intent = new Intent(this, AnnouncementList.class);
         startActivity(intent);
     }
@@ -328,12 +320,4 @@ public class MainActivity extends AppCompatActivity {
         biometricPrompt.authenticate(promptInfo);
     }
 
-    private String formatDate(long timestamp) {
-        // Implement your date formatting logic here
-        // You can use SimpleDateFormat or any other method to format the timestamp
-        // For simplicity, let's just return the timestamp as a string in this example
-        return String.valueOf(timestamp);
-    }
 }
-
-

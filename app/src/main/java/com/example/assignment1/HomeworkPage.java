@@ -21,6 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +35,8 @@ public class HomeworkPage extends AppCompatActivity {
     static HomeworkExpandableListAdapter expandableListViewAdapter;
     private List<String> homeworkSubjectList = new ArrayList<>();
     private HashMap<String, List<HomeworkItem>> homeworkItemList =  new HashMap<String, List<HomeworkItem>>();
+
+    private String subjectClickedOnFromMainPage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +79,7 @@ public class HomeworkPage extends AppCompatActivity {
             }
         });
         Button btnSeePastHW = findViewById(R.id.buttonSeePastHomework);
+        subjectClickedOnFromMainPage = getIntent().getStringExtra("clickedHomeworkSubject");
         btnSeePastHW.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,23 +93,19 @@ public class HomeworkPage extends AppCompatActivity {
             @Override
 
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                dateFormat.setLenient(false);
-                Date hwDate;
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate hwDate;
 
                 int i = 0;
-                Date tdyDate = new Date();
+                LocalDate tdyDate = LocalDate.now();
                 for(DataSnapshot homeworkSubject: snapshot.getChildren()){
                     homeworkSubjectList.add(homeworkSubject.getKey().toString());
                     List<HomeworkItem> temporaryHomeworkListItems = new ArrayList<>();
                     for(DataSnapshot homeworkItem: homeworkSubject.getChildren()){
-                        try {
-                            hwDate = dateFormat.parse(homeworkItem.child("Due_Date").getValue().toString());
-                        } catch (ParseException e) {
-                            throw new RuntimeException(e);
-                        }
+                        hwDate = LocalDate.parse(homeworkItem.child("Due_Date").getValue().toString(), dateFormat);
 
-                        if(tdyDate.before(hwDate)){
+
+                        if(tdyDate.isBefore(hwDate) || tdyDate.equals(hwDate)){
                             try{
                                 temporaryHomeworkListItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
                             }catch(NullPointerException e){
@@ -130,9 +131,12 @@ public class HomeworkPage extends AppCompatActivity {
 
     private void renderExpListView(){
         expandableListView = findViewById(R.id.homeworkExpandableListView);
-
         expandableListViewAdapter = new HomeworkExpandableListAdapter(this, homeworkSubjectList, homeworkItemList);
         expandableListView.setAdapter(expandableListViewAdapter);
+
+        if(subjectClickedOnFromMainPage != null){
+            expandableListView.expandGroup(homeworkSubjectList.indexOf(subjectClickedOnFromMainPage));
+        }
     }
 
 }
