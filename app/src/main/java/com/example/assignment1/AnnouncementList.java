@@ -221,8 +221,6 @@ public class AnnouncementList extends AppCompatActivity {
                         Log.d("List", "121, datasnapshot ran");
                         AnnouncementClass announcement = null;
 
-
-
                         HashMap<String, String> announcementData = (HashMap<String, String>) snapshot.getValue();
                         String annTitle = announcementData.get("Title");
                         String annDate = announcementData.get("Date");
@@ -281,6 +279,7 @@ public class AnnouncementList extends AppCompatActivity {
     public void filter(String selectedItem) {
         if (allAnnouncements == null || announcementAdapter == null) {
             Log.d("announcement", "all announcement/adapter is null");
+            Toast.makeText(this, "No Announcements", Toast.LENGTH_SHORT).show();
             return;
         }
 

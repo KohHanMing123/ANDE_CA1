@@ -33,14 +33,17 @@ public class ForgetPassword extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(ForgetPassword.this, "Email has been sent!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(ForgetPassword.this, "User does not exist!", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
 
-            } catch (Exception e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }catch(NullPointerException e){
+                Toast.makeText(this, "Please enter an email!", Toast.LENGTH_SHORT).show();
+            }
+            catch (Exception e){
+                if (emailAddress.equals("")){
+                    Toast.makeText(this, "Please enter an email!", Toast.LENGTH_SHORT).show();
+                }
             }
 
         }

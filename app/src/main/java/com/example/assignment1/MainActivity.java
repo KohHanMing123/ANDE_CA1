@@ -37,6 +37,8 @@ import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
 
+
+
     ListView listView;
     private SharedPreferences prefs;
     SharedPreferences.Editor editor;
@@ -135,13 +137,14 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.listViewHW);
         announcementsImages.startAnimation(slide);
         listView.startAnimation(slide);
+        // END OF ANIMATION
 
         //GETTING USER'S NAME===================
         String name = User.user_name;
         TextView welcomeText = (TextView) findViewById(R.id.textWelcome);
         welcomeText.setText("Welcome, " + name);
         welcomeText.startAnimation(flies);
-        // END OF ANIMATION
+
 
 
         announcementImageSwitcher = findViewById(R.id.imageSwitcherAnnouncement);
