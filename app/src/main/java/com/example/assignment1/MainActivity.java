@@ -27,14 +27,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
-
 
 
     ListView listView;
@@ -43,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
     TextView textView, announcementTextView;
     ImageSwitcher announcementImageSwitcher;
     private final int[] announcementImages = {R.drawable.books, R.drawable.assembly_announcement, R.drawable.recess_party};
-    private final String[] announcementText = {"National Book Day on 25 November!", "Joakim & Sonia this Wednesday!", "Recess Party on 1 December!"};
+    //    private final String[] announcementText = {"National Book Day on 25 November!", "Joakim & Sonia this Wednesday!", "Recess Party on 1 December!"};
+    private String[] announcementText = new String[3];
     private int currentIndex = 0;
+    private DatabaseReference mDatabase;
     private final Handler handler = new Handler();
 
     private Executor executor;
@@ -58,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         boolean bioAuth = prefs.getBoolean("bioAuth", false);
 
-        if(!bioAuth){
+        if (!bioAuth) {
             initiateBiometricAuthentication();
             editor.putBoolean("bioAuth", true);
             editor.apply();
@@ -66,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRestart(){
+    public void onRestart() {
         editor.putBoolean("bioAuth", false);
         editor.apply();
         super.onRestart();
@@ -74,8 +89,49 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        prefs=getSharedPreferences(LoginPage.Login, MODE_PRIVATE);
-        editor= prefs.edit();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Announcement");
+        Query query = mDatabase.orderByChild("Timestamp").limitToLast(3);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> announcementList = new ArrayList<>();
+
+                // Iterate through the top 3 announcements
+                for (DataSnapshot announcementSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        // Make sure the fields exist and have non-null values
+                        String title = announcementSnapshot.child("Title").getValue(String.class);
+                        String date = announcementSnapshot.child("Date").getValue(String.class);
+                        String annText = title + " on " + date;
+                        // Check for null values before processing
+                        if (title != null && date != null) {
+                            // Combine information into a string
+
+                            announcementList.add(annText);
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "purr", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                String[] announcementArray = announcementList.toArray(new String[0]);
+                announcementText = announcementArray;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle error
+                Toast.makeText(MainActivity.this, "Error retrieving announcements", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+        // setting sharedPref
+        prefs = getSharedPreferences(LoginPage.Login, MODE_PRIVATE);
+        editor = prefs.edit();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -144,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
         welcomeText.startAnimation(flies);
 
 
-
         announcementImageSwitcher = findViewById(R.id.imageSwitcherAnnouncement);
         announcementTextView = findViewById(R.id.textViewAnnouncement);
         announcementImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
@@ -157,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
                 return myView;
             }
         });
+
         announcementImageSwitcher.setInAnimation(AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.fade_in));
         announcementImageSwitcher.setOutAnimation(AnimationUtils.loadAnimation(MainActivity.this, android.R.anim.fade_out));
         announcementImageSwitcher.setImageResource(announcementImages[currentIndex]);
@@ -195,20 +251,19 @@ public class MainActivity extends AppCompatActivity {
             announcementImageSwitcher.setImageResource(announcementImages[currentIndex]);
             announcementTextView.setText(announcementText[currentIndex]);
 
-
             long interval = 3000L; // 3 seconds
             handler.postDelayed(this, interval);
         }
     };
 
-    public void onClickSettings(View v){
-        if (v.getId() ==R.id.settings_btn){
+    public void onClickSettings(View v) {
+        if (v.getId() == R.id.settings_btn) {
             Intent intent = new Intent(this, SettingsPage.class);
             startActivity(intent);
         }
     }
 
-    public void onClickAnnoucements(View v){
+    public void onClickAnnoucements(View v) {
         Intent intent = new Intent(this, AnnouncementList.class);
         startActivity(intent);
     }
@@ -273,4 +328,12 @@ public class MainActivity extends AppCompatActivity {
         biometricPrompt.authenticate(promptInfo);
     }
 
+    private String formatDate(long timestamp) {
+        // Implement your date formatting logic here
+        // You can use SimpleDateFormat or any other method to format the timestamp
+        // For simplicity, let's just return the timestamp as a string in this example
+        return String.valueOf(timestamp);
+    }
 }
+
+

@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -147,8 +148,6 @@ public class AnnouncementList extends AppCompatActivity {
                         Log.d("List", "121, datasnapshot ran");
                         AnnouncementClass announcement = null;
 
-
-
                         HashMap<String, String> announcementData = (HashMap<String, String>) snapshot.getValue();
                         String annTitle = announcementData.get("Title");
                         String annDate = announcementData.get("Date");
@@ -186,6 +185,18 @@ public class AnnouncementList extends AppCompatActivity {
                             announcementArr.add(announcement);
                         }
                     }
+
+                    Collections.sort(announcementArr, new Comparator<AnnouncementClass>() {
+                        @Override
+                        public int compare(AnnouncementClass announcement1, AnnouncementClass announcement2) {
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+
+                            LocalDate date1 = LocalDate.parse(announcement1.getDateString(), formatter);
+                            LocalDate date2 = LocalDate.parse(announcement2.getDateString(), formatter);
+
+                            return date2.compareTo(date1);
+                        }
+                    });
 
                     callback.onSuccess(announcementArr);
                 } else {
@@ -259,6 +270,18 @@ public class AnnouncementList extends AppCompatActivity {
                         }
                     }
 
+                    Collections.sort(announcementArr, new Comparator<AnnouncementClass>() {
+                        @Override
+                        public int compare(AnnouncementClass announcement1, AnnouncementClass announcement2) {
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+
+                            LocalDate date1 = LocalDate.parse(announcement1.getDateString(), formatter);
+                            LocalDate date2 = LocalDate.parse(announcement2.getDateString(), formatter);
+
+                            return date2.compareTo(date1);
+                        }
+                    });
+
                     callback.onSuccess(announcementArr);
                 } else {
                     Log.d("List", "No children found");
@@ -270,7 +293,7 @@ public class AnnouncementList extends AppCompatActivity {
 
 
 
-    public interface DataCallback<T> {
+    private interface DataCallback<T> {
         void onSuccess(T data);
 
         void onFailure(Exception e);

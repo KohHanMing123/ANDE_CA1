@@ -73,6 +73,7 @@
                 <ImageButton
                     android:id="@+id/settings_btn"
                     android:layout_width="90px"
+                    android:layout_marginLeft="10px"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/background_orange_rounded"
@@ -106,6 +107,7 @@
                 app:cardCornerRadius="30px">
 
                 <LinearLayout
+                    android:onClick="onClickAnnoucements"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
