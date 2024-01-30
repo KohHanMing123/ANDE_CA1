@@ -34,8 +34,9 @@
         android:layout_height="34dp"
         android:layout_gravity="center"
         android:autoText="false"
-        android:background="#00FFFFFF"
+        android:background="@drawable/orange_line_thin"
         android:gravity="bottom"
+        android:paddingBottom="3dp"
         android:text="See Past Homework"
         android:textAllCaps="false"
         android:textColor="@color/orange" />
