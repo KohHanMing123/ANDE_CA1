@@ -96,7 +96,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "signInWithEmail:success");
-                                    Toast.makeText(LoginPage.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginPage.this, "Authentication successful", Toast.LENGTH_SHORT).show();
 
                                     mDatabase = FirebaseDatabase.getInstance().getReference();
                                     String uId = mAuth.getCurrentUser().getUid();
@@ -105,7 +105,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                                             if (!task.isSuccessful()) {
                                                 Log.e("firebase", "Error getting data", task.getException());
-                                                Toast.makeText(LoginPage.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(LoginPage.this, "Incorrect Credentials", Toast.LENGTH_SHORT).show();
                                                 Intent intent = getIntent();
                                                 finish();
                                                 startActivity(intent);

@@ -90,7 +90,7 @@ public class SettingsPage extends AppCompatActivity {
             }
         });
 
-        StorageReference fileRef = storageProfilePicsRef.child("Users/"+FirebaseAuth.getInstance().getUid()+"profile.jpg");
+        StorageReference fileRef = storageProfilePicsRef.child("Users/" + FirebaseAuth.getInstance().getUid() + "profile.jpg");
         fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -192,16 +192,20 @@ public class SettingsPage extends AppCompatActivity {
         String newContact = contact.getText().toString();
         String newName = er_name.getText().toString();
 
+        if (newContact.equals("") || newName.equals("")) {
+            Toast.makeText(this, "Please fill up contact!", Toast.LENGTH_SHORT).show();
+        } else {
+            mDatabase.child("Users").child(FirebaseAuth.getInstance().getUid()).child("er_name").setValue(newName);
+            mDatabase.child("Users").child(FirebaseAuth.getInstance().getUid()).child("phone_no").setValue(newContact);
+            mDatabase.child("Users").child(FirebaseAuth.getInstance().getUid()).child("er_relationship").setValue(selectedRs);
 
-        mDatabase.child("Users").child(FirebaseAuth.getInstance().getUid()).child("er_name").setValue(newName);
-        mDatabase.child("Users").child(FirebaseAuth.getInstance().getUid()).child("phone_no").setValue(newContact);
-        mDatabase.child("Users").child(FirebaseAuth.getInstance().getUid()).child("er_relationship").setValue(selectedRs);
+            User.er_name = newName;
+            User.er_relationship = selectedRs;
+            User.phone_no = newContact;
 
-        User.er_name = newName;
-        User.er_relationship = selectedRs;
-        User.phone_no = newContact;
+            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+        }
 
-        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -271,7 +275,7 @@ public class SettingsPage extends AppCompatActivity {
     }
 
     private void uploadImageToFirebase(Uri imageUri) {
-        final StorageReference fileRef = storageProfilePicsRef.child("Users/"+FirebaseAuth.getInstance().getUid()+"profile.jpg");
+        final StorageReference fileRef = storageProfilePicsRef.child("Users/" + FirebaseAuth.getInstance().getUid() + "profile.jpg");
         fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

@@ -33,6 +33,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
@@ -46,8 +47,6 @@ import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
     ListView listView;
     private SharedPreferences prefs;
     SharedPreferences.Editor editor;
@@ -55,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
     TextView textView, announcementTextView;
     ImageSwitcher announcementImageSwitcher;
     private final int[] announcementImages = {R.drawable.books, R.drawable.assembly_announcement, R.drawable.recess_party};
-    private final String[] announcementText = {"National Book Day on 25 November!", "Joakim & Sonia this Wednesday!", "Recess Party on 1 December!"};
+    private String[] announcementText = new String[3];
+//    private String[] announcementText = {"R", "A", "R"};
+    private DatabaseReference mDatabase;
     private int currentIndex = 0;
     private final Handler handler = new Handler();
 
@@ -88,6 +89,45 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Announcement");
+
+        Query query = mDatabase.orderByChild("Timestamp").limitToLast(3);
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> announcementList = new ArrayList<>();
+
+                // Iterate through the top 3 announcements
+                for (DataSnapshot announcementSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        // Make sure the fields exist and have non-null values
+                        String title = announcementSnapshot.child("Title").getValue(String.class);
+                        String date = announcementSnapshot.child("Date").getValue(String.class);
+
+                        // Check for null values before processing
+                        if (title != null && date != null) {
+                            // Combine information into a string
+                            String annText = title + " on " + date;
+                            announcementList.add(annText);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                String[] announcementArray = announcementList.toArray(new String[0]);
+                announcementText = announcementArray;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle error
+                Toast.makeText(MainActivity.this, "Error retrieving announcements", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         prefs=getSharedPreferences(LoginPage.Login, MODE_PRIVATE);
         editor= prefs.edit();
 
