@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -86,7 +88,14 @@ public class HomeworkPage extends AppCompatActivity {
                 startActivity(new Intent(HomeworkPage.this, PastHomeworkPage.class));
             }
         });
+        renderHomeworkData();
+    }
+
+    private void renderHomeworkData(){
+        homeworkSubjectList.clear();
         databaseReference = FirebaseDatabase.getInstance().getReference("Homework").child(User.class_name);
+
+        //
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -107,8 +116,8 @@ public class HomeworkPage extends AppCompatActivity {
                             try{
                                 temporaryHomeworkListItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
                             }catch(NullPointerException e){
-                                homeworkItem.getRef().child("User_Completed").child(User.user_id).setValue(false);
-                                temporaryHomeworkListItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
+                                writeUserHomeworkData();
+                                return;
                             }
                         }
                     }
@@ -124,7 +133,36 @@ public class HomeworkPage extends AppCompatActivity {
             }
 
         });
+    }
 
+    private void writeUserHomeworkData(){
+        databaseReference = FirebaseDatabase.getInstance().getReference("Homework").child(User.class_name);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate hwDate;
+
+                LocalDate tdyDate = LocalDate.now();
+                for(DataSnapshot homeworkSubject: snapshot.getChildren()){
+                    for(DataSnapshot homeworkItem: homeworkSubject.getChildren()){
+                        hwDate = LocalDate.parse(homeworkItem.child("Due_Date").getValue().toString(), dateFormat);
+                        if(tdyDate.isBefore(hwDate) || tdyDate.equals(hwDate)){
+                            homeworkItem.getRef().child("User_Completed").child(User.user_id).setValue(false);
+                        }
+                    }
+                }
+                renderHomeworkData();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("a",error.toString());
+            }
+
+        });
     }
 
     private void renderExpListView(){

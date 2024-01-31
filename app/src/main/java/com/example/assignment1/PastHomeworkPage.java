@@ -63,7 +63,7 @@ public class PastHomeworkPage extends AppCompatActivity {
                 for(DataSnapshot homeworkSubject: snapshot.getChildren()){
                     hwDate = LocalDate.parse(homeworkSubject.child("Due_Date").getValue().toString(), dateFormat);
                     if(tdyDate.isAfter(hwDate)){
-                        homeworkItems.add(new HomeworkItem(homeworkSubject.getKey().toString(), homeworkSubject.getKey().toString(), homeworkSubject.child("Due_Date").getValue().toString(), homeworkSubject.child("User_Completed").child(User.user_id).getValue(boolean.class)));
+                        homeworkItems.add(new HomeworkItem(homeworkSubject.getKey().toString(), homeworkSubject.getKey().toString(), homeworkSubject.child("Due_Date").getValue().toString(), false));
                     }
                 }
                 ListView pastHWLV = findViewById(R.id.lvPastHomework);

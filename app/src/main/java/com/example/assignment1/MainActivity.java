@@ -28,6 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -257,13 +259,44 @@ public class MainActivity extends AppCompatActivity {
                             try{
                                 homeworkItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
                             }catch(NullPointerException e){
-                                homeworkItem.getRef().child("User_Completed").child(User.user_id).setValue(false);
-                                homeworkItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
+                                writeUserHomeworkData();
+                                return;
                             }
                         }
                     }
                 }
                 renderHWList();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("a",error.toString());
+            }
+
+        });
+    }
+
+    private void writeUserHomeworkData(){
+        databaseReference = FirebaseDatabase.getInstance().getReference("Homework").child(User.class_name);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate hwDate;
+
+                LocalDate tdyDate = LocalDate.now();
+                LocalDate oneWeekDate = LocalDate.now().plusDays(7);
+
+                for(DataSnapshot homeworkSubject: snapshot.getChildren()){
+                    for(DataSnapshot homeworkItem: homeworkSubject.getChildren()){
+                        hwDate = LocalDate.parse(homeworkItem.child("Due_Date").getValue().toString(), dateFormat);
+                        if(tdyDate.isBefore(hwDate) && hwDate.isBefore(oneWeekDate) ){
+                            homeworkItem.getRef().child("User_Completed").child(User.user_id).setValue(false);
+                        }
+                    }
+                }
+               setupHomeworkListView();
             }
 
             @Override

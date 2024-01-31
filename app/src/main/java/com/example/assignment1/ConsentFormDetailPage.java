@@ -27,6 +27,8 @@ public class ConsentFormDetailPage extends AppCompatActivity {
     private CardView cardBackground;
     private Button consentButton;
 
+    private boolean isFormAlrConsented = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,7 @@ public class ConsentFormDetailPage extends AppCompatActivity {
         scrollViewContent.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                if (!scrollViewContent.canScrollVertically(1)) {
+                if (!scrollViewContent.canScrollVertically(1) && !isFormAlrConsented) {
                     enableConsentButton();
                 }
             }
@@ -69,6 +71,7 @@ public class ConsentFormDetailPage extends AppCompatActivity {
                         String formIssuedBy =forms.child("Issued_by").getValue().toString();
                         boolean formIsConsented = forms.child("User_consent").child(User.user_id).getValue(Boolean.class);
                         if(formIsConsented){
+                            isFormAlrConsented = true;
                             formAlreadyConsent();
                         }
                         consentFormDetails = new ConsentFormItem(formTitle, formContent, formDate, formIssuedBy,formIsConsented);
