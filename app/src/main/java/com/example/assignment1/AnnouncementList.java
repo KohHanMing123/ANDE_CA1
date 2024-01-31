@@ -113,7 +113,6 @@ public class AnnouncementList extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String selectedItem = filterOptions[position];
-                Log.d("SPINNER", "Selected Item: " + selectedItem);
 
                 filter(selectedItem);
             }
@@ -270,17 +269,6 @@ public class AnnouncementList extends AppCompatActivity {
                         }
                     }
 
-                    Collections.sort(announcementArr, new Comparator<AnnouncementClass>() {
-                        @Override
-                        public int compare(AnnouncementClass announcement1, AnnouncementClass announcement2) {
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
-
-                            LocalDate date1 = LocalDate.parse(announcement1.getDateString(), formatter);
-                            LocalDate date2 = LocalDate.parse(announcement2.getDateString(), formatter);
-
-                            return date2.compareTo(date1);
-                        }
-                    });
 
                     callback.onSuccess(announcementArr);
                 } else {

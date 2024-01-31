@@ -252,45 +252,4 @@ public class QuizPage extends AppCompatActivity {
             Log.e("ListViewError", "ListView is null. Make sure it is properly initialized in your layout.");
         }
     }
-    // Modify the method to update the QuizAdapter and notify the changes
-//    private void updateQuizListView(List<QuizItem> quizItems) {
-//        QuizAdapter quizAdapter = (QuizAdapter) listView.getAdapter();
-//        if (quizAdapter != null) {
-//            quizAdapter.updateData(quizItems);
-//        } else {
-//            quizAdapter = new QuizAdapter(this, quizItems);
-//            listView.setAdapter(quizAdapter);
-//        }
-//    }
-
-//    private List<QuizItem> generateQuizItems() {
-//        Log.d("QuizPage", "Inside generateQuizItems method");
-//
-//        List<QuizItem> quizItems = new ArrayList<>();
-//
-//        String quizName1 = getString(R.string.quiz_name_1);
-//        String subtext1 = getString(R.string.subtext_1);
-//        quizItems.add(new QuizItem(quizName1, subtext1));
-//
-//        String quizName2 = getString(R.string.quiz_name_2);
-//        String subtext2 = getString(R.string.subtext_2);
-//        quizItems.add(new QuizItem(quizName2, subtext2));
-//
-//        String quizName3 = getString(R.string.quiz_name_3);
-//        String subtext3 = getString(R.string.subtext_3);
-//        quizItems.add(new QuizItem(quizName3, subtext3));
-//
-//        String quizName4 = getString(R.string.quiz_name_4);
-//        String subtext4 = getString(R.string.subtext_4);
-//        quizItems.add(new QuizItem(quizName4, subtext4));
-//
-//        String quizName5 = getString(R.string.quiz_name_5);
-//        String subtext5 = getString(R.string.subtext_5);
-//        quizItems.add(new QuizItem(quizName5, subtext5));
-//
-//
-//        Log.d("QuizItemsRes", "QuizItems: " + quizItems);
-//
-//        return quizItems;
-//    }
 }
