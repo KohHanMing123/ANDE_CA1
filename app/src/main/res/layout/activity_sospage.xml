@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SOSPage"
-    android:background="#FFF7EB">
+    android:background="#FFF7EB"
+    style="@style/SCREEN"
+    >
 
     <LinearLayout
         android:layout_width="0dp"
@@ -15,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingBottom="30dp"
-
         >
 
         <!-- Back Arrow Icon -->
