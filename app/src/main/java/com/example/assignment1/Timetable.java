@@ -30,13 +30,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class Timetable extends AppCompatActivity implements View.OnClickListener {
-    private final long selectedDate = -1;
-
     private DatabaseReference databaseReference;
     private ListView timetableListView;
-
+    private Date selectedDate;
     private List<TimetableItem> timetableListByDay;
-
+    private List<Exam> examListByDay;
+    private boolean isTimetableSelected = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -86,6 +85,7 @@ public class Timetable extends AppCompatActivity implements View.OnClickListener
 
         // Initializing Month And Year
         Date date = new Date(calendar.getDate());
+        selectedDate = new Date(calendar.getDate());
         SimpleDateFormat headerDisplay = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
         SimpleDateFormat bottomDisplay = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault());
 
@@ -100,10 +100,15 @@ public class Timetable extends AppCompatActivity implements View.OnClickListener
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                Date selectedDate = new Date(year - 1900, month, dayOfMonth);
+                selectedDate = new Date(year - 1900, month, dayOfMonth);
                 displayDate.setText(bottomDisplay.format(selectedDate));
                 headerMonthYear.setText(headerDisplay.format(selectedDate));
-                setUpTimetableListView(selectedDate);
+                if(isTimetableSelected){
+                    setUpTimetableListView(selectedDate);
+                }else{
+                    setUpExamListView(selectedDate);
+                }
+
 
             }
         });
@@ -119,18 +124,59 @@ public class Timetable extends AppCompatActivity implements View.OnClickListener
 
             timetableBtn.setBackground(getDrawable(R.drawable.orange_line));
             examBtn.setBackground(null);
-
+            isTimetableSelected = true;
+            setUpTimetableListView(selectedDate);
         }else{
             examBtn.setBackground(getDrawable(R.drawable.orange_line));
             timetableBtn.setBackground(null);
+            isTimetableSelected = false;
+            setUpExamListView(selectedDate);
         }
     }
 
+    private void setUpExamListView(Date date){
+        examListByDay = new ArrayList<>();
+        SimpleDateFormat timetableComparison = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedTimetableComparisonDay = timetableComparison.format(date);
+        String classname = User.class_name;
+        databaseReference = FirebaseDatabase.getInstance().getReference("Exams").child(classname);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot examData : snapshot.getChildren()){
+                    if(formattedTimetableComparisonDay.equals(examData.child("Date").getValue().toString())){
+                        examListByDay.add(new Exam(examData.getKey().toString(), examData.child("Date").getValue().toString(), examData.child("Start_time").getValue().toString(), examData.child("End_time").getValue().toString(), examData.child("Venue").getValue().toString()));
+                    }
+                }
+                renderExamListView();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("a",error.toString());
+            }
+        });
+    }
+    private void renderExamListView(){
+        //Exam shares timetable components
+        timetableListView = findViewById(R.id.listTimetable);
+        TextView textNoClasses = findViewById(R.id.textNoClasses);
+        if(examListByDay.size() == 0){
+            timetableListView.setVisibility(View.GONE);
+            textNoClasses.setText("No Exams");
+            textNoClasses.setVisibility(View.VISIBLE);
+        }else{
+            timetableListView.setVisibility(View.VISIBLE);
+            textNoClasses.setVisibility(View.GONE);
+        }
+        ExamListAdapter examListAdapter = new ExamListAdapter(this, examListByDay);
+        timetableListView.setAdapter(examListAdapter);
+    }
     private void setUpTimetableListView(Date date) {
         timetableListByDay =  new ArrayList<>();
         SimpleDateFormat timetableComparison = new SimpleDateFormat("EEEE");
         String formattedTimetableComparisonDay = timetableComparison.format(date);
-        String classname = "1B";
+        String classname = User.class_name;
         databaseReference = FirebaseDatabase.getInstance().getReference("Timetable").child(classname);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -192,6 +238,7 @@ public class Timetable extends AppCompatActivity implements View.OnClickListener
         TextView textNoClasses = findViewById(R.id.textNoClasses);
         if(unprocessedTimetableItems.size() == 0){
             timetableListView.setVisibility(View.GONE);
+            textNoClasses.setText("No Classes");
             textNoClasses.setVisibility(View.VISIBLE);
         }else{
             timetableListView.setVisibility(View.VISIBLE);

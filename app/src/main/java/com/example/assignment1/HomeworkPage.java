@@ -103,8 +103,6 @@ public class HomeworkPage extends AppCompatActivity {
                     List<HomeworkItem> temporaryHomeworkListItems = new ArrayList<>();
                     for(DataSnapshot homeworkItem: homeworkSubject.getChildren()){
                         hwDate = LocalDate.parse(homeworkItem.child("Due_Date").getValue().toString(), dateFormat);
-
-
                         if(tdyDate.isBefore(hwDate) || tdyDate.equals(hwDate)){
                             try{
                                 temporaryHomeworkListItems.add(new HomeworkItem(homeworkItem.getKey().toString(), homeworkSubject.getKey().toString(), homeworkItem.child("Due_Date").getValue().toString(), homeworkItem.child("User_Completed").child(User.user_id).getValue(boolean.class)));
