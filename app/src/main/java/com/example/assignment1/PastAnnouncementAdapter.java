@@ -40,6 +40,7 @@ public class PastAnnouncementAdapter extends RecyclerView.Adapter<PastAnnounceme
         holder.date.setText(announcement.getDateString());
         holder.author.setText(announcement.getAuthor());
         holder.category.setText(announcement.getCategory());
+        holder.alertDot.setVisibility(View.INVISIBLE);
     }
 
     @Override

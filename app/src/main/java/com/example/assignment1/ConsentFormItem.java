@@ -6,7 +6,6 @@ public class ConsentFormItem {
     private boolean isConsented;
 
 
-
     public ConsentFormItem(String title, String content, String dateCreated, String issuedBy, boolean isConsented) {
         this.title = title;
         this.content = content;
