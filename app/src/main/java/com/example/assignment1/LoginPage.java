@@ -54,15 +54,11 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
         CheckBox rmb_btn = findViewById(R.id.rmb_btn);
         rmb_btn.setChecked(prefs.getBoolean("rmb", false));
         rmb_btn.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Toast.makeText(LoginPage.this, "IS THIS CHECKED? " + isChecked, Toast.LENGTH_SHORT).show();
-            // Save the "remember me" setting in SharedPreferences
-
-            editor.putBoolean("rmb", isChecked);  // Change the key to "rmb"
+            editor.putBoolean("rmb", isChecked);
             editor.apply();
         });
 
         String email = prefs.getString("email", "");
-        Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
         boolean rmb = prefs.getBoolean("rmb", false); // Change the key to "rmb"
 
         if (rmb) {
@@ -145,7 +141,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
 
                                 } else {
                                     Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginPage.this, "Authentication failed.",
+                                    Toast.makeText(LoginPage.this, "Incorrect Credentials.",
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }
